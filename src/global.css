@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/fonts/Gilroy-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@layer components {
+  .bg-main-gradient {
+    @apply bg-linear-to-tr from-[#251346] via-[#1D2B44] to-[#1D325D];
+  }
+}
+
+:root {
+    --auth-button-color: #5353BF;
+    --auth-input-color: #484888;
+    --auth-button-disabled-color: #7E7EA3;
+}
+
+html, body {
+    background-color: #13132B;
+}
