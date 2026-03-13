@@ -24,6 +24,6 @@ class PasswordResetEmail(email.PasswordResetEmail):
         subject = self.get_subject()
         from_email = f"Flux Service <{settings.EMAIL_HOST_USER}>"
 
-        msg = EmailMultiAlternatives(subject, "Используйте HTML-клиент", from_email, to)
+        msg = EmailMultiAlternatives(subject, "Використайте HTML-клієнт", from_email, to)
         msg.attach_alternative(html_content, "text/html")
         msg.send()

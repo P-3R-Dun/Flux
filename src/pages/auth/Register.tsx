@@ -42,7 +42,7 @@ export const Register  = () => {
                 <label className='text-sm ml-1'>Email</label>
                 <input 
                     type="email" onChange={(e) => setEmail(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -50,7 +50,7 @@ export const Register  = () => {
                 <label className='text-sm ml-1'>Username</label>
                 <input 
                     type="text" onChange={(e) => setLogin(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -58,7 +58,7 @@ export const Register  = () => {
                 <label className='text-sm ml-1'>Password</label>
                 <input
                     type="password" onChange={(e) => setPassword(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -66,14 +66,14 @@ export const Register  = () => {
                 <label className='text-sm ml-1'>Confirm Password</label>
                 <input 
                     type="password" onChange={(e) => setConfirmPassword(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
             <div className='flex items-center justify-between text-sm'>
                 <label className='flex gap-2 cursor-pointer select-none items-start'>                
-                    <input type="checkbox" className='accent-(--auth-button-color)' checked={isAgreed} onChange={(e) => setIsAgreed(e.target.checked)}/>
-                    <span>I agree to the <Link to="/terms" className="text-(--auth-button-color) self-start">Terms of Use</Link> and consent to the processing of my personal data in accordance with the <Link to="/privacy" className="text-(--auth-button-color) self-start">Privacy Policy</Link></span>
+                    <input type="checkbox" className='accent-(--auth-main-color)' checked={isAgreed} onChange={(e) => setIsAgreed(e.target.checked)}/>
+                    <span>I agree to the <Link to="/terms" className="text-(--auth-main-color) self-start">Terms of Use</Link> and consent to the processing of my personal data in accordance with the <Link to="/privacy" className="text-(--auth-main-color) self-start">Privacy Policy</Link></span>
                 </label>
             </div>
 
@@ -83,13 +83,13 @@ export const Register  = () => {
                 type="submit"
                 disabled={isLoading || !isAgreed}
                 onClick={() => play('BUTTON_SOUND')}    
-                className={`p-3 w-full ${isAgreed ? 'bg-(--auth-button-color) cursor-pointer' : 'bg-(--auth-button-disabled-color) cursor-not-allowed' } drop-shadow-lg rounded-xl font-semibold select-none`}>
+                className={`p-3 w-full ${isAgreed ? 'bg-button-gradient cursor-pointer shadow-[0_0_40px_rgba(99,121,184,0.3)]' : 'bg-button-disabled-gradient cursor-not-allowed shadow-[0_0_40px_rgba(179,179,179,0.3)]' } rounded-xl font-semibold select-none`}>
                 {isLoading ? "Loading..." : "Sign Up"}
             </motion.button>
 
             <div className='flex justify-start gap-1.5 text-sm'>
                 <p className='text-[#CACACA]'>Have an account?</p>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='text-(--auth-button-color) select-none cursor-pointer'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='text-(--auth-main-color) select-none cursor-pointer'>
                     Log in
                 </Link></motion.button>
             </div>
