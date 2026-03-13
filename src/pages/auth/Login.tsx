@@ -42,7 +42,7 @@ export const Login = () => {
                 <label className='text-sm ml-1'>Login</label>
                 <input 
                     type="text" value={Login} onChange={(e) => setLogin(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -50,16 +50,16 @@ export const Login = () => {
                 <label className='text-sm ml-1'>Password</label>
                 <input 
                     type="password" value={Password} onChange={(e) => setPassword(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
             <div className='flex items-center justify-between text-sm'>
                 <label className='flex items-center gap-1 cursor-pointer select-none'>                
-                    <input type="checkbox" className='accent-(--auth-button-color)' checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}/>
+                    <input type="checkbox" className='accent-(--auth-main-color)' checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}/>
                     <span>Remember me</span>
                 </label>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/forgot-password' className='text-(--auth-button-color) select-none cursor-pointer'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/forgot-password' className='text-(--auth-main-color) select-none cursor-pointer'>
                     Forgot your Password?
                 </Link></motion.button>
             </div>
@@ -70,13 +70,13 @@ export const Login = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-(--auth-button-color) drop-shadow-lg rounded-xl font-semibold cursor-pointer select-none">
-                {isLoading ? "Loading..." : "Log in"}
+                className="p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
+                {isLoading ? "Loading..." : "Log In"}
             </motion.button>
 
             <div className='flex justify-start gap-1.5 text-sm'>
                 <p className='text-[#CACACA]'>Need an account?</p>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/register' className='text-(--auth-button-color) select-none cursor-pointer'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/register' className='text-(--auth-main-color) select-none cursor-pointer'>
                     Register
                 </Link></motion.button>
             </div>

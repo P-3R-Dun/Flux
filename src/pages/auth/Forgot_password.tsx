@@ -37,7 +37,7 @@ export const ForgotPass = () => {
                     <h1 className='font-semibold text-3xl text-green-400'>Check your email!</h1>
                     <p>We have sent a password recover instructions to your email.</p>
                 </div>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-[#403D97] rounded-xl font-semibold'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold'>
                     Back to Login
                 </Link></motion.button>
             </motion.div>
@@ -62,7 +62,7 @@ export const ForgotPass = () => {
                 <label className='text-sm ml-1'>Email</label>
                 <input 
                     type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -72,10 +72,10 @@ export const ForgotPass = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-(--auth-button-color) drop-shadow-lg rounded-xl font-semibold cursor-pointer select-none">
+                className="p-3 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold cursor-pointer select-none">
                 {isLoading ? "Loading..." : "Restore"}
             </motion.button>
-            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-button-color) select-none cursor-pointer'>
+            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                 Back to Login
             </Link></motion.button>
         </motion.form>

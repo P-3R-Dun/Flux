@@ -40,7 +40,7 @@ export const ResetPass = () => {
                     <h1 className='font-semibold text-3xl text-green-400'>Password changed!</h1>
                     <p>Now you can try log in again!</p>
                 </div>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-[#403D97] rounded-xl font-semibold'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold'>
                     Back to Login
                 </Link></motion.button>
             </motion.div>
@@ -49,7 +49,7 @@ export const ResetPass = () => {
 
     return (
         <AnimatePresence>
-        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-5 mx-auto font-medium'>
+        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-5 mx-auto font-semibold'>
             <div>
                 <h1 className='font-semibold text-4xl'>Change the Password!</h1>
                 <h2 className='font-medium text-xl text-[#CACACA]'>Enter your new password to gain Flux App access!</h2>
@@ -65,7 +65,7 @@ export const ResetPass = () => {
                 <label className='text-sm ml-1'>Password</label>
                 <input 
                     type="password" value={new_password} onChange={(e) => setNewPassword(e.target.value)} disabled={isLoading}
-                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -73,7 +73,7 @@ export const ResetPass = () => {
                 <label className='text-sm ml-1'>Confirm Password</label>
                 <input 
                     type="password" value={re_new_password} onChange={(e) => setReNewPassword(e.target.value)} disabled={isLoading}
-                    className='bg-[#403D97] rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-button-color)/50 transition-all'
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
 
@@ -83,10 +83,10 @@ export const ResetPass = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-(--auth-button-color) drop-shadow-lg rounded-xl font-semibold cursor-pointer select-none">
-                {isLoading ? "Loading..." : "Change Password"}
+                className="p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
+                Change Password
             </motion.button>
-            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-button-color) select-none cursor-pointer'>
+            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                 Back to Login
             </Link></motion.button>
         </motion.form>

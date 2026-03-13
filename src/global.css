@@ -38,16 +38,27 @@
 
 @layer components {
   .bg-main-gradient {
-    @apply bg-linear-to-tr from-[#251346] via-[#1D2B44] to-[#1D325D];
+    @apply bg-linear-to-t from-[#1E1E1E] to-[#202632];
+  }
+  .bg-auth-gradient {
+    @apply bg-linear-to-t from-[#0d1117] to-[#202632];
+  }
+  .bg-button-gradient {
+    @apply bg-radial from-[#6379B8] to-[#425386];
+  }
+  .bg-button-disabled-gradient {
+    @apply bg-radial from-[#B3B3B3] to-[#6D6D6D];
   }
 }
 
 :root {
-    --auth-button-color: #5353BF;
-    --auth-input-color: #484888;
-    --auth-button-disabled-color: #7E7EA3;
+    --auth-main-color: #6379B8;
+    --auth-input-color: #333d5a;
+    --mobile-navigation-bar: #181C21;
 }
 
 html, body {
-    background-color: #13132B;
+    background-color: #0d1117;
+    font-family: Gilroy;
+    font-weight: 600;
 }
