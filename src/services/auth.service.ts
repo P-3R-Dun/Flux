@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api/auth';
+const API_URL = 'http://192.168.50.192:8000/api/auth';
 
 interface LoginDT { username: string; password: string; }
 interface RegisterDT { email: string; username: string; password: string; }

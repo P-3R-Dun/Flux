@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3w0r)2_r&dn+ke03a6qb4*9^lx@+h1g302_4h+$4h2gaioqgnr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 # Allow frontend and backend work with each other
 CORS_ALLOWED_ORIGINS = [
@@ -47,7 +47,7 @@ DJOSER = {
     'EMAIL': {
         'password_reset': 'accounts.email.PasswordResetEmail',
     },
-    'DOMAIN': 'localhost:5173',
+    'DOMAIN': '192.168.50.192:5173',
     'SITE_NAME': 'Flux App',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
 }

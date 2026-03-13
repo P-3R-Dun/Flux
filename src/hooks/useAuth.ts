@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { authService } from '../services/auth.service'
+import { useAuthStore } from '../store/useAuthStore';
 
 export const useLogin = () => {
+    const setAuth = useAuthStore(state => state.login);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     
@@ -12,7 +14,7 @@ export const useLogin = () => {
             const storage = rememberMe ? localStorage : sessionStorage;
             storage.setItem('access', data.access);
             storage.setItem('refresh', data.refresh);
-
+            setAuth();
             }
             catch (error: any) {
                 setError("Login Error: " + error.message);
