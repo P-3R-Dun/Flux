@@ -58,7 +58,15 @@
 }
 
 html, body {
-    background-color: #0d1117;
-    font-family: Gilroy;
-    font-weight: 600;
+  overflow: hidden;
+  height: 100dvh;
+  background-color: #0d1117;
+  font-family: Gilroy;
+  font-weight: 600;
+}
+
+#root {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }

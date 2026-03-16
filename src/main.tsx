@@ -9,7 +9,9 @@ if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <BrowserRouter>
-        <App />
+        <div>
+          <App />
+        </div>
       </BrowserRouter>
     </React.StrictMode>,
   );

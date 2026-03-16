@@ -36,7 +36,7 @@
         return (
             <div className="relative min-h-dvh w-full bg-auth-gradient flex items-center justify-center px-6">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[40vh] 
-                bg-[radial-gradient(ellipse_at_top,_rgba(99,121,184,0.4)_0%,_transparent_70%)] 
+                bg-[radial-gradient(ellipse_at_top,rgba(99,121,184,0.4)_0%,transparent_70%)] 
                 pointer-events-none blur-[60px] z-0" />
                 <motion.div key={'intro-wrapper'} 
                     initial={{ opacity: 0, scale: 0.9, filter: "blur(20px)" }} 

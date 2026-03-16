@@ -3,8 +3,7 @@ import { Link } from 'react-router'
 import React, { useState, useEffect } from 'react'
 import { useLogin } from '../../hooks/useAuth'
 import { useSound } from '../../hooks/useSound'
-
-
+import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 
 export const Login = () => {
     const { play } = useSound();
@@ -26,16 +25,16 @@ export const Login = () => {
 
     return (
         <AnimatePresence mode='wait'>
-        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-6 mx-auto font-medium'>
+        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-4 mx-auto font-medium'>
             <div>
                 <h1 className='font-semibold text-4xl'>Welcome!</h1>
                 <h2 className='font-medium text-xl text-[#CACACA]'>Glad to see you again!</h2>
             </div>
 
             {error && (
-                <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded-md text-sm">
+                <motion.div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded-md text-sm">
                     {error}
-                </div>
+                </motion.div>
             )}
 
             <div className='flex flex-col gap-1.5'>
@@ -70,8 +69,8 @@ export const Login = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
-                {isLoading ? "Loading..." : "Log In"}
+                className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
+                {isLoading ? <LoadingSpinner /> : "Log In"}
             </motion.button>
 
             <div className='flex justify-start gap-1.5 text-sm'>

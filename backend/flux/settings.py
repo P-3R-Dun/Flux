@@ -67,11 +67,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'djoser',
+    'accounts',
+    'finance',
 ]
 
 MIDDLEWARE = [
@@ -163,3 +164,7 @@ EMAIL_HOST_USER = 'flux.budget@gmail.com'
 EMAIL_HOST_PASSWORD = 'wwwt zrzx ulef vwgv'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Flux Service <flux.budget@gmail.com>'
+
+# Media Settings (Profile Pictures)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

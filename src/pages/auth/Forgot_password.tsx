@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { useState, useEffect } from 'react'
 import { useSound } from '../../hooks/useSound'
 import { useResetSend } from '../../hooks/useAuth'
+import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 
 export const ForgotPass = () => {
     const { play } = useSound();
@@ -72,8 +73,8 @@ export const ForgotPass = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold cursor-pointer select-none">
-                {isLoading ? "Loading..." : "Restore"}
+                className="flex items-center justify-center p-3 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold cursor-pointer select-none">
+                {isLoading ? <LoadingSpinner /> : "Restore"}
             </motion.button>
             <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                 Back to Login
