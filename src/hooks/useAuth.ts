@@ -40,7 +40,12 @@ export const useRegister = () => {
         try {
             await authService.register({email, username, password});
         } catch (error: any) {
-            setError("Registration Error: " + error.message);
+            if (typeof error === 'object' && error !== null) {
+                const messages = Object.values(error).flat().join(' ');
+                setError(messages || "Something went wrong");
+            } else {
+                setError(error.message || "Registration Error");
+            }
         } finally {
             setIsLoading(false);
         }

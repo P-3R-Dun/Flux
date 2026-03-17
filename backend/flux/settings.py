@@ -28,10 +28,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Allow frontend and backend work with each other
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://192.168.50.192:5173',
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Connect JWT Lib to REST Framework for creating access tokens
 REST_FRAMEWORK = {
@@ -40,9 +37,23 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Custom User Model
+
+AUTH_USER_MODEL = 'accounts.User'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Djoser Settings
 
 DJOSER = {
+    'LOGIN_FIELD': 'username',
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user': 'djoser.serializers.UserSerializer',
+    },
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
     'EMAIL': {
         'password_reset': 'accounts.email.PasswordResetEmail',
@@ -118,7 +129,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

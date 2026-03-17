@@ -5,7 +5,6 @@ import { AuthLayout } from './components/layout/shared/AuthLayout.tsx'
 import { AuthGuard, GuestGuard } from './components/guards/GuardSys.tsx'
 import { Login } from './pages/auth/Login.tsx'
 import { Register } from './pages/auth/Register.tsx'
-import { CompleteProfile } from './pages/auth/CompleteProfile.tsx'
 import { ForgotPass } from './pages/auth/Forgot_password.tsx'
 import { ResetPass } from './pages/auth/Password_reset.tsx'
 import { DashboardHeader } from './components/ui/mobile/dashboard/DashboardHeader.tsx'
@@ -58,9 +57,7 @@ function App() {
               <Route element={<GuestGuard />}>
                 <Route element={<AuthLayout />}>
                   <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Navigate to="/register/step-1" replace />} />
-                  <Route path="/register/step-1" element={<Register />} />
-                  <Route path="/register/step-2" element={<CompleteProfile />} />
+                  <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPass />} />
                   <Route path="/password-reset/:uid/:token" element={<ResetPass />} />
                 </Route>
