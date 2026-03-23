@@ -1,8 +1,11 @@
-const API_URL = 'http://192.168.50.192:8000/api/auth';
+const IP = import.meta.env.VITE_SERVER_IP;
+const API_URL = `http://${IP}:8000/api/auth`;
 
 interface LoginDT { username: string; password: string; }
 interface RegisterDT { email: string; username: string; password: string; }
 interface ResetConfirmDT { new_password: string; re_new_password: string; uid: string; token: string; }
+interface ActivateAccountDT { uid: string; token: string; }
+interface RecoverAccountDT { email: string; }
 
 export const authService = {
     async login(data: LoginDT) {
@@ -56,6 +59,30 @@ export const authService = {
 
         if (response.ok) { return true };
         const result = await response.json();
+        throw result;
+    },
+
+    async ActivateAccount(data: ActivateAccountDT) {
+        const response = await fetch(`${API_URL}/users/activation/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) { return true };
+        const result = await response.json();
+        throw result;
+    },
+
+    async RecoverAccount(data: RecoverAccountDT) {
+        const response = await fetch(`${API_URL}/recover/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) { return true };
+        const result = await response.json().catch(() => ({ error: 'No info' }));
         throw result;
     }
 }

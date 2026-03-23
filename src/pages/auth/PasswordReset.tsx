@@ -1,17 +1,21 @@
 import { motion, AnimatePresence } from 'motion/react'
-import { Link } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { useState, useEffect } from 'react'
 import { useSound } from '../../hooks/useSound'
-import { useResetSend } from '../../hooks/useAuth'
+import { useReset } from '../../hooks/useAuth'
+import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 
-export const ForgotPass = () => {
+export const ResetPass = () => {
     const { play } = useSound();
-    const [email, setEmail] = useState('')
-    const {isLoading, error, isSuccess, resetPasswordSend } = useResetSend()
+    const [new_password, setNewPassword] = useState('')
+    const [re_new_password, setReNewPassword] = useState('')
+    const { uid, token } = useParams();
+
+    const {isLoading, error, isSuccess, resetPassword } = useReset()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        resetPasswordSend(email);
+        resetPassword(new_password, re_new_password, uid || '', token || '');
     } 
 
     useEffect(() => {
@@ -34,8 +38,8 @@ export const ForgotPass = () => {
                 className='flex flex-col w-full max-w-lg gap-10 mx-auto font-medium text-center'
             >
                 <div className='flex flex-col gap-2'>
-                    <h1 className='font-semibold text-3xl text-green-400'>Check your email!</h1>
-                    <p>We have sent a password recover instructions to your email.</p>
+                    <h1 className='font-semibold text-3xl text-green-400'>Password changed!</h1>
+                    <p>Now you can try log in again!</p>
                 </div>
                 <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold'>
                     Back to Login
@@ -46,10 +50,10 @@ export const ForgotPass = () => {
 
     return (
         <AnimatePresence>
-        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-5 mx-auto font-medium'>
+        <motion.form initial={{opacity: 0}} animate={{opacity: 1}} transition={{duration: 1}} onSubmit={handleSubmit} className='flex flex-col w-full max-w-lg gap-5 mx-auto font-semibold'>
             <div>
-                <h1 className='font-semibold text-4xl'>Forgot Password?</h1>
-                <h2 className='font-medium text-xl text-[#CACACA]'>Enter your email!</h2>
+                <h1 className='font-semibold text-4xl'>Change the Password!</h1>
+                <h2 className='font-medium text-xl text-[#CACACA]'>Enter your new password to gain Flux App access!</h2>
             </div>
 
             {error && (
@@ -59,9 +63,17 @@ export const ForgotPass = () => {
             )}
 
             <div className='flex flex-col gap-1.5'>
-                <label className='text-sm ml-1'>Email</label>
+                <label className='text-sm ml-1'>Password</label>
                 <input 
-                    type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading}
+                    type="password" value={new_password} onChange={(e) => setNewPassword(e.target.value)} disabled={isLoading}
+                    className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
+                />
+            </div>
+
+             <div className='flex flex-col gap-1.5'>
+                <label className='text-sm ml-1'>Confirm Password</label>
+                <input 
+                    type="password" value={re_new_password} onChange={(e) => setReNewPassword(e.target.value)} disabled={isLoading}
                     className='bg-(--auth-input-color) rounded-md outline-none p-1 w-full focus:ring-2 ring-(--auth-main-color)/50 transition-all'
                 />
             </div>
@@ -72,8 +84,8 @@ export const ForgotPass = () => {
                 type='submit'
                 onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
-                className="p-3 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold cursor-pointer select-none">
-                {isLoading ? "Loading..." : "Restore"}
+                className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
+                {isLoading ? <LoadingSpinner /> : "Restore"}
             </motion.button>
             <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                 Back to Login

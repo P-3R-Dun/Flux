@@ -12,12 +12,25 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
+
+# Load custom .env configuration settings
+load_dotenv(dotenv_path=f"{BASE_DIR}/../.env")
+
+IP_ADRESS = os.getenv("VITE_SERVER_IP")
+ENV_DATABASE_HOST = os.getenv("DATABASE_HOST")
+ENV_DATABASE_NAME = os.getenv("DATABASE_NAME")
+ENV_DATABASE_USER = os.getenv("DATABASE_USER")
+ENV_DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+ENV_EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+ENV_EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+ENV_DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-3w0r)2_r&dn+ke03a6qb4*9^lx@+h1g302_4h+$4h2gaioqgnr'
@@ -28,10 +41,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # Allow frontend and backend work with each other
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://192.168.50.192:5173',
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Connect JWT Lib to REST Framework for creating access tokens
 REST_FRAMEWORK = {
@@ -40,16 +50,34 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Custom User Model
+
+AUTH_USER_MODEL = 'accounts.User'
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Djoser Settings
 
 DJOSER = {
+    'LOGIN_FIELD': 'username',
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+        'user': 'djoser.serializers.UserSerializer',
+    },
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
     'EMAIL': {
         'password_reset': 'accounts.email.PasswordResetEmail',
+        'activation': 'accounts.email.ActivationEmail',
     },
-    'DOMAIN': '192.168.50.192:5173',
+    'DOMAIN': f'{IP_ADRESS}:5173',
     'SITE_NAME': 'Flux App',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'SEND_ACTIVATION_EMAIL': True,
+
 }
 
 # JWT Settings (life-time for tokens)
@@ -67,11 +95,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'djoser',
+    'accounts',
+    'finance',
 ]
 
 MIDDLEWARE = [
@@ -110,14 +139,13 @@ WSGI_APPLICATION = 'flux.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'flux_db',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': ENV_DATABASE_NAME,
+        'USER': ENV_DATABASE_USER,
+        'PASSWORD': ENV_DATABASE_PASSWORD,
+        'HOST': ENV_DATABASE_HOST,
+        'PORT': 5432,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -159,7 +187,11 @@ STATIC_URL = 'static/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'flux.budget@gmail.com'
-EMAIL_HOST_PASSWORD = 'wwwt zrzx ulef vwgv'
+EMAIL_HOST_USER = ENV_EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = ENV_EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'Flux Service <flux.budget@gmail.com>'
+DEFAULT_FROM_EMAIL = ENV_DEFAULT_FROM_EMAIL
+
+# Media Settings (Profile Pictures)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
