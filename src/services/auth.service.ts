@@ -84,5 +84,17 @@ export const authService = {
         if (response.ok) { return true };
         const result = await response.json().catch(() => ({ error: 'No info' }));
         throw result;
+    },
+    
+    async verifyToken(token: string) {
+        const response = await fetch(`${API_URL}/jwt/verify/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+        });
+
+        if (response.ok) { return true };
+        const result = await response.json();
+        throw result;
     }
 }
