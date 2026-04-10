@@ -1,13 +1,20 @@
 const IP = import.meta.env.VITE_SERVER_IP;
-const API_URL = `http://${IP}:8000/api/dashboard/summary`;
+const API_URL = `http://${IP}:8000/api/finance`;
+
+interface TransactionDT {amount: string | number;}
+export interface ProfileDT {first_name: string; last_name: string; email: string; username: string; currency: string; financial_period: string; focus_streak: number; profile_picture: string | null; transactions: TransactionDT[];}
 
 export const dashboardService = {
-    async getSummary() {
-        const response = await fetch(API_URL, {
+    async getProfile(token: string): Promise<ProfileDT> {
+        const response = await fetch(`${API_URL}/profile/me/`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include', // Включаем куки для аутентификации
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         });
-        return response.json();
+        const result = await response.json();
+        if (!response.ok) {
+            throw result
+        };
+
+        return result;
     }
 }

@@ -17,17 +17,22 @@ const Tips = [
 ]
 
 export const LoadingPage = () => {
-    const [tipIndex, setTipIndex] = useState(0);
+    const [tipIndex, setTipIndex] = useState(() => Math.floor(Math.random() * Tips.length));
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setTipIndex((prev) => (prev + 1) % Tips.length);
+            setTipIndex((prev) => {
+                let next;
+                do {
+                    next = Math.floor(Math.random() * Tips.length);
+                } while (next === prev);
+                return next;
+            });
         }, 5000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        
         <div className='flex flex-col items-center h-dvh p-6'>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[40vh] 
                     bg-[radial-gradient(ellipse_at_top,rgba(99,121,184,0.4)_0%,transparent_70%)] 
