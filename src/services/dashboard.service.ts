@@ -1,7 +1,7 @@
 const IP = import.meta.env.VITE_SERVER_IP;
 const API_URL = `http://${IP}:8000/api/finance`;
 
-interface TransactionDT {amount: string | number;}
+interface TransactionDT {id: string; amount: string | number; date: string; description: string; category_name: string | null; goal_title: string | null; brand_logo_url: string | null;}
 export interface ProfileDT {first_name: string; last_name: string; email: string; username: string; currency: string; financial_period: string; focus_streak: number; profile_picture: string | null; transactions: TransactionDT[];}
 
 export const dashboardService = {

@@ -84,6 +84,7 @@ DJOSER = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=31),
+    'UPDATE_LAST_LOGIN': True
 }
 
 # Application definition
@@ -195,3 +196,6 @@ DEFAULT_FROM_EMAIL = ENV_DEFAULT_FROM_EMAIL
 # Media Settings (Profile Pictures)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# BRANDFETCH API Settings
+BRANDFETCH_API_KEY = os.getenv('BRANDFETCH_API_KEY')

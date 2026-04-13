@@ -27,9 +27,7 @@ export const Dashboard = () => {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: {
-                staggerChildren: 0.15,
-            },
+            transition: { staggerChildren: 0.15 },
         },
     };
 
@@ -44,13 +42,13 @@ export const Dashboard = () => {
 
     return (
         <motion.div 
-            className='flex flex-col w-full gap-5 h-screen overflow-hidden'
+            className='flex flex-col w-full gap-5 h-dvh overflow-hidden'
             variants={containerVariants}
             initial="hidden"
             animate="visible"
         >
-            <motion.div variants={itemVariants} className='flex flex-row items-center justify-between p-4 pt-6'>
-                <div className='flex flex-row gap-3 items-center'>
+            <motion.div variants={itemVariants} className='flex items-center justify-between p-4 pt-6'>
+                <div className='flex gap-3 items-center'>
                     <motion.div whileHover={{ scale: 1.05 }} className='cursor-pointer'>
                         <Avatar name={displayName} />
                     </motion.div>
@@ -65,16 +63,16 @@ export const Dashboard = () => {
                 </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className='flex flex-col items-center justify-center gap-2'>
-                <p className='text-lg'>Available Balance ({profile?.currency || 'UAH'})</p>
-                <div className='flex flex-row gap-2 items-center'>
+            <motion.div variants={itemVariants} className='flex flex-col items-center gap-2'>
+                <p className='text-lg'>Available Balance ({profile?.currency})</p>
+                <div className='flex gap-2 items-center'>
                     <motion.button 
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setShowBalance(!showBalance)} 
                         className='cursor-pointer'
                     >
-                        { showBalance ? (<Eye />) : (<EyeOff />) }
+                        {showBalance ? <Eye /> : <EyeOff />}
                     </motion.button>
                     
                     <div className='flex min-w-36 items-center justify-center overflow-hidden h-14'>
@@ -92,33 +90,33 @@ export const Dashboard = () => {
                         </AnimatePresence>
                     </div>
                 </div>
-                <div className='flex flex-col items-center justify-center gap-1'>
+                <div className='flex flex-col items-center gap-1'>
                     <p className='text-xs'>Financial Period: {profile?.financial_period || 'None'}</p>
                     <p className='text-xs'>Goal: None</p>
                 </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className='flex flex-row items-center justify-center gap-10 select-none'>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-full bg-[#5D73B3] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
+            <motion.div variants={itemVariants} className='flex items-center justify-center gap-10 select-none'>
+                <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
+                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
                     <span className="text-sm">Add</span>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-full bg-[#5D73B3] flex items-center justify-center'><Folder className='w-6 h-6'/></div>
+                <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
+                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Folder className='w-6 h-6'/></div>
                     <span className="text-sm">Templates</span>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-full bg-[#5D73B3] flex items-center justify-center'><Rocket className='w-6 h-6'/></div>
+                <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
+                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Rocket className='w-6 h-6'/></div>
                     <span className="text-sm">Boost</span>
                 </motion.div>
             </motion.div>
 
             <motion.div 
                 variants={itemVariants} 
-                className='flex-1 bg-[#181D27] rounded-t-4xl mt-4 shadow-2xl'
+                className='flex-1 bg-[#181D27] rounded-t-4xl shadow-2xl flex flex-col overflow-hidden min-h-0'
             >
-                <div className='flex flex-row items-center justify-between p-6'>
-                    <div className='flex flex-row gap-3 items-center'>
+                <div className='flex items-center justify-between p-6 shrink-0'>
+                    <div className='flex gap-3 items-center'>
                         <h2 className='text-2xl font-bold text-white'>Recent Activity</h2>
                     </div>
                     <motion.button 
@@ -129,9 +127,36 @@ export const Dashboard = () => {
                         View All
                     </motion.button>
                 </div>
-                <div className='px-6 pb-10'>
-                    <div className='flex flex-col items-center justify-center min-h-50 text-gray-400'>
-                        <p>No recent activity</p>
+                <div className='px-6 pb-32 overflow-y-auto flex-1'>
+                    <div className='flex flex-col gap-4'>
+                        {profile?.transactions?.length === 0 ? 'No transactions yet' : profile?.transactions?.map((transaction) => (
+                            <motion.div key={transaction.id} className='rounded-3xl bg-[#202632] py-2 px-4 flex items-center justify-between w-full'>
+                                <div className='flex gap-4'>
+                                    <div className='w-12 h-12 rounded-full bg-[#2A314A] flex items-center justify-center overflow-hidden shrink-0'>
+                                        {transaction.brand_logo_url ? (
+                                            <img src={transaction.brand_logo_url} 
+                                                alt={transaction.description} 
+                                                className='w-full h-full object-cover'
+                                            />
+                                        ) : (
+                                            <span className='text-lg text-white font-bold uppercase'>
+                                                {transaction.description ? transaction.description[0] : 'T'}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className='pt-1.5'>
+                                        <h3 className='text-md'>{transaction.description}</h3>
+                                        <p className='text-xs text-gray-500'>{transaction.category_name || transaction.goal_title}</p>
+                                    </div>
+                                </div>
+                                <div className='flex flex-col items-end'>
+                                    <p className={`text-md px-4 ${Number(transaction.amount) >= 0 ? 'text-[#86CF78]' : 'text-[#FF5C5C]'}`}>
+                                        {Number(transaction.amount) >= 0 ? '+' : ''}{transaction.amount}
+                                    </p>
+                                    <p className='text-xs px-4 text-gray-500'>{new Date(transaction.date).toLocaleDateString()}</p>
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </motion.div>

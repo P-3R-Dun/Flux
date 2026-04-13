@@ -2,9 +2,11 @@ from rest_framework import serializers
 from .models import UserProfile, Transaction
 
 class TransactionSerializer(serializers.ModelSerializer):
+    category_name = serializers.ReadOnlyField(source='category.name')
+    goal_title = serializers.ReadOnlyField(source='goal.title')
     class Meta:
         model = Transaction
-        fields = ('id', 'amount', 'date', 'description')
+        fields = ('id', 'amount', 'date', 'description', 'brand_logo_url', 'category', 'goal', 'category_name', 'goal_title')
 
 class UserProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
@@ -23,6 +25,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
                   'financial_period',
                   'focus_streak',
                   'profile_picture',
-                  'transactions')
+                  'transactions'
+                  )
 
 

@@ -26,7 +26,7 @@ export const MobileNavigation = () => {
             damping: 25, 
             delay: 0.2
         }} 
-        className="flex flex-row items-center justify-around w-full bg-[#1E2329] absolute bottom-0 left-0 rounded-t-4xl overflow-hidden h-[calc(7rem+env(safe-area-inset-bottom))] z-50 pb-[env(safe-area-inset-bottom)]">
+        className="flex flex-row items-center justify-around w-full bg-[#14181c] absolute bottom-0 left-0 rounded-t-4xl overflow-hidden h-[calc(7rem+env(safe-area-inset-bottom))] z-50 pb-[env(safe-area-inset-bottom)]">
             {navItems.map((item) => (
                 <NavLink aria-label={item.title} to={item.path} key={item.title} replace={true}
                 className={"h-20 flex-1"}>
