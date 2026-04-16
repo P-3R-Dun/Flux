@@ -1,43 +1,25 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Link } from 'react-router'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRegister } from '../../hooks/useAuth'
-import { useSound } from '../../hooks/useSound'
 import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 import { Eye, EyeOff } from 'lucide-react';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const Register = () => {
-    const { play } = useSound()
     const { isLoading, error, isSuccess, register} = useRegister();
-
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isAgreed, setIsAgreed] = useState(false);
     const [isKeyVisible, setIsKeyVisible] = useState(false);
-    
     const isFormValid = username.trim() !== '' && emailRegex.test(email) && isAgreed && password.trim() !== ''
-
     const handleSubmit = (e: React.FormEvent) => {
-        play('BUTTON_SOUND')
         e.preventDefault();
         register(email, username, password, confirmPassword)
     }
-
-    useEffect(() => {
-        if (error) {
-            play('ERROR_SOUND')
-        }
-    },[error])
-
-    useEffect(() => {
-        if (isSuccess) {
-            play('SUCCESS_SOUND')
-        }
-    },[isSuccess])
 
     if (isSuccess) {
         return (
@@ -151,7 +133,7 @@ export const Register = () => {
 
                 <div className='flex justify-start gap-1.5 text-sm'>
                     <p>Have an account?</p>
-                    <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='text-(--auth-main-color) select-none cursor-pointer'>
+                    <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                         Log in
                     </Link></motion.button>
                 </div>

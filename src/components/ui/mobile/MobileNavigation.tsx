@@ -16,6 +16,7 @@ const navItems: MobileNavigationProps[] = [
 ]
 
 export const MobileNavigation = () => {
+     
     return (
         <motion.div
         initial={{ y: "100%" }} 

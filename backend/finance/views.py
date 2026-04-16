@@ -1,12 +1,13 @@
 import requests
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-from .models import UserProfile
-from .serializers import UserProfileSerializer, TransactionSerializer
+from .models import UserProfile, Category
+from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer
 
 class CurrentUserProfileView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -18,38 +19,57 @@ class CurrentUserProfileView(APIView):
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+class CategoryView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        categories = Category.objects.filter(Q(is_default=True) | Q(user=request.user))
+
+        category_type = request.query_params.get('type')
+
+        if category_type in ['income', 'expense']:
+            categories = categories.filter(type=category_type)
+
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class TransactionCreateView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = TransactionSerializer
 
     def perform_create(self, serializer):
-        brand_logo_url = None
-        description = serializer.validated_data.get('description')
+        serializer.save(user=self.request.user)
 
-        if description:
-            query = description.strip()
+class BrandFetchView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        query = request.GET.get('query', '')
+        if query:
+            query = query.strip()
 
-            search_url = f"https://api.brandfetch.io/v2/search/{query}"
+            search_url = f"https://api.logo.dev/search?q={query}"
 
             headers = {
-                "Authorization": f"Bearer {settings.BRANDFETCH_API_KEY}"
+                "Authorization": f"Bearer {settings.LOGO_DEV_API_KEY}"
             }
 
             try:
                 response = requests.get(search_url, headers=headers, timeout=3)
                 if response.status_code == 200:
+                    results = []
                     data = response.json()
                     if data and isinstance(data, list) and len(data) > 0:
-                        first_match = data[0]
-                        domain = first_match['domain']
-                        brand_logo_url = f'https://cdn.brandfetch.io/{domain}/fallback/transparent/format/svg'
+                        for item in data:
+                            results.append({
+                                "name": item.get('name'),
+                                "domain": item.get('domain'),
+                                "brand_logo_url": f"https://img.logo.dev/{item.get('domain')}?token={settings.LOGO_DEV_PUBLIC_KEY}"
+                            })
 
+                        return Response(results)
+                    else:
+                        return Response([])
 
             except requests.RequestException:
-                pass
+                return Response({"error": "External API is unavailable!"}, status=503)
 
-        serializer.save(
-            user=self.request.user,
-            brand_logo_url=brand_logo_url
-        )
+        return Response({"error": "Bad Response!"}, status=503)

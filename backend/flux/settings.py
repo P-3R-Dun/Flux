@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load custom .env configuration settings
 load_dotenv(dotenv_path=f"{BASE_DIR}/../.env")
 
-IP_ADRESS = os.getenv("VITE_SERVER_IP")
+IP_ADDRESS = os.getenv("VITE_SERVER_IP")
 ENV_DATABASE_HOST = os.getenv("DATABASE_HOST")
 ENV_DATABASE_NAME = os.getenv("DATABASE_NAME")
 ENV_DATABASE_USER = os.getenv("DATABASE_USER")
@@ -73,7 +73,7 @@ DJOSER = {
         'password_reset': 'accounts.email.PasswordResetEmail',
         'activation': 'accounts.email.ActivationEmail',
     },
-    'DOMAIN': f'{IP_ADRESS}:5173',
+    'DOMAIN': f'{IP_ADDRESS}:5173',
     'SITE_NAME': 'Flux App',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
     'SEND_ACTIVATION_EMAIL': True,
@@ -197,5 +197,6 @@ DEFAULT_FROM_EMAIL = ENV_DEFAULT_FROM_EMAIL
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# BRANDFETCH API Settings
-BRANDFETCH_API_KEY = os.getenv('BRANDFETCH_API_KEY')
+# LOGO.DEV API Settings
+LOGO_DEV_API_KEY = os.getenv('LOGO_DEV_API_KEY')
+LOGO_DEV_PUBLIC_KEY = os.getenv('LOGO_DEV_PUBLIC_KEY')

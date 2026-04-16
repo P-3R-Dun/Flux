@@ -1,29 +1,20 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Link } from 'react-router'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useLogin } from '../../hooks/useAuth'
-import { useSound } from '../../hooks/useSound'
 import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 import { Eye, EyeOff } from 'lucide-react';
 
 export const Login = () => {
-    const { play } = useSound();
     const [Login, setLogin] = useState("")
     const [Password, setPassword] = useState("")
     const {isLoading, error, login} = useLogin()
     const [rememberMe, setRememberMe] = useState(false)
     const [isKeyVisible, setIsKeyVisible] = useState(false);
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         login(Login, Password, rememberMe)
     } 
-
-    useEffect(() => {
-        if (error) {
-            play('ERROR_SOUND')
-        }
-    },[error])
 
     return (
         <AnimatePresence mode='wait'>
@@ -72,7 +63,7 @@ export const Login = () => {
                     <input type="checkbox" className='accent-(--auth-main-color)' checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)}/>
                     <span>Remember me</span>
                 </label>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/account-recover' className='text-(--auth-main-color) select-none cursor-pointer'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/account-recover' className='text-(--auth-main-color) select-none cursor-pointer'>
                     Have some troubles?
                 </Link></motion.button>
             </div>
@@ -81,7 +72,6 @@ export const Login = () => {
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }} 
                 type='submit'
-                onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
                 className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
                 {isLoading ? <LoadingSpinner /> : "Log In"}
@@ -89,7 +79,7 @@ export const Login = () => {
 
             <div className='flex justify-start gap-1.5 text-sm'>
                 <p className='text-[#CACACA]'>Need an account?</p>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/register' className='text-(--auth-main-color) select-none cursor-pointer'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/register' className='text-(--auth-main-color) select-none cursor-pointer'>
                     Register
                 </Link></motion.button>
             </div>

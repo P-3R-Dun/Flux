@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Routes, Route, Navigate, useLocation } from 'react-router'
-import { AuthLayout } from './components/layout/shared/AuthLayout.tsx'
-import { AuthGuard, GuestGuard } from './components/guards/GuardSys.tsx'
-import { Login } from './pages/auth/Login.tsx'
-import { Register } from './pages/auth/Register.tsx'
-import { AccountRecover } from './pages/auth/AccountRecover.tsx'
-import { ResetPass } from './pages/auth/PasswordReset.tsx'
-import { Dashboard } from './pages/dashboard/DashboardPage.tsx'
-import { LoadingPage } from './pages/Loading_page.tsx'
-import { ActivateAccount } from './pages/auth/ActivateAccount.tsx'
-import { AppLayout } from './components/layout/mobile/AppLayout.tsx'
-import { useAuthStore } from './store/useAuthStore.ts'
+import { AuthLayout } from '@/components/layout/shared/AuthLayout.tsx'
+import { AuthGuard, GuestGuard } from '@/components/guards/GuardSys.tsx'
+import { Login } from '@/pages/auth/Login.tsx'
+import { Register } from '@/pages/auth/Register.tsx'
+import { AccountRecover } from '@/pages/auth/AccountRecover.tsx'
+import { ResetPass } from '@/pages/auth/PasswordReset.tsx'
+import { Dashboard } from '@/pages/dashboard/mobile/DashboardPage.tsx'
+import { LoadingPage } from '@/pages/Loading_page.tsx'
+import { ActivateAccount } from '@/pages/auth/ActivateAccount.tsx'
+import { AppLayout } from '@/components/layout/mobile/AppLayout.tsx'
+import { useAuthStore } from '@/store/useAuthStore.ts'
+import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreate/TransactionCreatePage.tsx'
 
 function App() {
   const location = useLocation();
@@ -67,7 +68,9 @@ function App() {
                 <Route path="/history" element={<Dashboard />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/goals" element={<Dashboard />} />
+                <Route path="/settings" element={<Dashboard />} />
               </Route>
+              <Route path="/add-transaction" element={<TransactionCreatePage />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

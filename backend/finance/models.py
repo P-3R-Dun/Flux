@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -60,7 +61,8 @@ class Transaction(models.Model):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='transactions')
     goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
+    name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     brand_logo_url = models.URLField(null=True, blank=True)
 

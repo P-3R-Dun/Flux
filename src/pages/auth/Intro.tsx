@@ -1,8 +1,7 @@
     import { useState } from "react";
     import { motion, AnimatePresence } from 'motion/react'
     import FluxLogo from '../../assets/icons/brand/flux-logo.svg'
-    import { useSound } from '../../hooks/useSound'
-
+    
     interface introSlides {
         title: string;
         subtitle: React.ReactNode;
@@ -21,14 +20,14 @@
     ];
 
     export const Intro = ({onComplete}: IntroProps) => {
-        const { play } = useSound();
+         
         const [SlideCounter, setSlideCounter] = useState(0);
         const slideHandle = () => {  
             if (SlideCounter < slides.length - 1) {
-                play('BUTTON_SOUND')
+                
                 setSlideCounter(prev => prev + 1);
             } else {
-                play('BUTTON_SOUND')
+                
                 localStorage.setItem('IntroCompleted', 'true');
                 onComplete();
             }
@@ -86,7 +85,7 @@
                         </div>
                         <motion.button whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} onClick={slideHandle} className="p-3 w-full bg-button-gradient rounded-2xl select-none cursor-pointer shadow-[0_0_40px_rgba(99,121,184,0.3)]">{SlideCounter < slides.length - 1 ? 'Continue' : 'Start planning'}</motion.button>
                         <motion.button whileHover={{scale: 1.10}} whileTap={{scale: 0.95}} onClick={() => {
-                            play('BUTTON_SOUND')
+                            
                             localStorage.setItem('IntroCompleted', 'true');
                             onComplete();
                             }} className="w-full cursor-pointer select-none">{"> Skip"}
