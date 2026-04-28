@@ -13,6 +13,7 @@ import { ActivateAccount } from '@/pages/auth/ActivateAccount.tsx'
 import { AppLayout } from '@/components/layout/mobile/AppLayout.tsx'
 import { useAuthStore } from '@/store/useAuthStore.ts'
 import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreate/TransactionCreatePage.tsx'
+import { SettingPage } from '@/pages/dashboard/mobile/SettingPage.tsx'
 
 function App() {
   const location = useLocation();
@@ -68,7 +69,7 @@ function App() {
                 <Route path="/history" element={<Dashboard />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/goals" element={<Dashboard />} />
-                <Route path="/settings" element={<Dashboard />} />
+                <Route path="/settings" element={<SettingPage />} />
               </Route>
               <Route path="/add-transaction" element={<TransactionCreatePage />} />
             </Route>

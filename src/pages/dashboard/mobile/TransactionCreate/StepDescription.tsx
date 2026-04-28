@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
-import { usePostTransaction } from '@/hooks/usePostTransaction';
+import { usePostTransaction } from '@/hooks/useTransaction';
 
 export const StepDescription = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem('access') || sessionStorage.getItem('access');  
 
-    const { amount, name, description, category_id, date, brand_logo_url, reset, setField } = useTransactionCreateStore();
+    const { editingId, amount, name, description, category_id, date, brand_logo_url, reset, setField } = useTransactionCreateStore();
     const { execute, isLoading } = usePostTransaction();
     
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -17,6 +17,7 @@ export const StepDescription = () => {
         setErrorMessage(null);
 
         const record = {
+            id: editingId,
             amount,
             name: name || "New Record",
             description,

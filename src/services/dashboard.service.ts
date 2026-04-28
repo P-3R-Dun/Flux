@@ -10,7 +10,7 @@ export interface CategoryDT {
 }
 
 export interface TransactionDT {
-    id?: string; 
+    id?: number; 
     amount: string | number; 
     date: string;
     name: string; 
@@ -89,5 +89,33 @@ export const dashboardService = {
         };
 
         return result;
+    },
+    async updateTransaction(id: number, data: TransactionDT, token: string) {
+        const response = await fetch(`${API_URL}/transactions/${id}/update/`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+                body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw result
+        };
+
+        return result;
+    },
+
+    async deleteTransaction(id: number, token: string) {
+        const response = await fetch(`${API_URL}/transactions/${id}/delete/`, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw result
+        };
+
+        return true;
     }
 }

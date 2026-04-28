@@ -3,7 +3,7 @@ import { dashboardService } from '@/services/dashboard.service';
 import { useDashboardStore } from '@/store/useDashboardStore';
 
 export const useDashboardData = () => {
-    const { profile, categories, setProfile, setCategories } = useDashboardStore();
+    const { profile, categories, setProfile, setCategories,  } = useDashboardStore();
 
     const [isLoadingProfile, setIsLoadingProfile] = useState(false);
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);

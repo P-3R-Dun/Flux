@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 interface TransactionCreateState {
+    editingId: number | undefined;
     step: number;
     amount: number;
     date: string;
@@ -17,9 +18,11 @@ interface TransactionCreateState {
         value: TransactionCreateState[K]
     ) => void;
     reset: () => void;
+    setEditData: (data: Partial<TransactionCreateState>) => void;
 }
 
-const initialState: Pick<TransactionCreateState, "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name"> = {
+const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name"> = {
+    editingId: undefined,
     step: 1,
     amount: 0,
     date: "",
@@ -32,6 +35,7 @@ const initialState: Pick<TransactionCreateState, "step" | "amount" | "date" | "d
 export const useTransactionCreateStore = create<TransactionCreateState>((set) => ({
     ...initialState,
 
+    setEditData: (data) => set((state) => ({ ...state, ...data })),
     setStep: (step) => set({ step }),
     nextStep: () => set((state) => ({ step: state.step + 1 })),
     prevStep: () => set((state) => ({ step: state.step - 1 })),

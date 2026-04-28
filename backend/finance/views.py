@@ -1,12 +1,12 @@
 import requests
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-from .models import UserProfile, Category
+from .models import UserProfile, Category, Transaction
 from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer
 
 class CurrentUserProfileView(APIView):
@@ -38,6 +38,13 @@ class TransactionCreateView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class TransactionUpdateView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user)
 
 class BrandFetchView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -73,3 +80,10 @@ class BrandFetchView(APIView):
                 return Response({"error": "External API is unavailable!"}, status=503)
 
         return Response({"error": "Bad Response!"}, status=503)
+
+class TransactionDeleteView(DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TransactionSerializer
+
+    def get_queryset(self):
+        return Transaction.objects.filter(user=self.request.user)
