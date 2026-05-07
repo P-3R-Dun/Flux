@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
 import { usePostTransaction, usePostTemplate } from '@/hooks/useTransaction';
 import { TemplateModal } from '@/components/ui/shared/TemplateModal';
+import { useTemplates } from '@/hooks/useTemplates'; // ПРАВИЛЬНЫЙ ИМПОРТ ХУКА
 
 export const StepDescription = () => {
     const navigate = useNavigate();
@@ -13,6 +14,8 @@ export const StepDescription = () => {
     const { editingId, amount, name, description, category_id, date, brand_logo_url, isTemplateMode, reset, setField } = useTransactionCreateStore();
     const { execute, isLoading } = usePostTransaction();
     const { execute: executeTemplate, isLoading: isTemplateLoading } = usePostTemplate();
+    
+    const { updateTemplate, isMutating: isTemplateUpdating } = useTemplates();
     
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,7 +75,12 @@ export const StepDescription = () => {
         }
         
         try {
-            await executeTemplate(templateData, token || '');
+            if (editingId) {
+                await updateTemplate(editingId, templateData, token || '');
+            } else {
+                await executeTemplate(templateData, token || '');
+            }
+            
             setIsModalOpen(false);
             reset();
             navigate('/templates'); 
@@ -81,7 +89,8 @@ export const StepDescription = () => {
         }
     }
 
-    const isCurrentLoading = isTemplateMode ? isTemplateLoading : isLoading;
+    const isCurrentLoading = isTemplateMode ? (isTemplateLoading || isTemplateUpdating) : isLoading;
+    const isModalLoading = isTemplateLoading || isTemplateUpdating;
 
     return (
         <motion.div className='flex flex-col min-h-[80vh] relative'>            
@@ -137,7 +146,7 @@ export const StepDescription = () => {
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     onSave={handleTemplateSave}
-                    isLoading={isTemplateLoading}
+                    isLoading={isModalLoading}
                 />,
                 document.body
             )}

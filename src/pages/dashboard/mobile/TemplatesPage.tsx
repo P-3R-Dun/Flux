@@ -77,7 +77,7 @@ export const TemplatesPage = () => {
             animate="visible"
         >
             <motion.div variants={itemVariants} className='flex items-center justify-between p-4 pt-6 shrink-0 relative'>
-                <motion.button onClick={() => {navigate(-1); }}
+                <motion.button onClick={() => {navigate("/"); }}
                     whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.95 }} className="bg-[#252836] rounded-2xl p-2 w-12 h-12">
                     <div className="flex items-center justify-center">
                         <ChevronLeft className="w-6 h-6"/>
