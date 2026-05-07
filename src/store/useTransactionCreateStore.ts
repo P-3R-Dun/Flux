@@ -9,6 +9,7 @@ interface TransactionCreateState {
     brand_logo_url: string;
     category_id: string; 
     name: string;
+    isTemplateMode: boolean;
     
     setStep: (step: number) => void,
     nextStep: () => void,
@@ -21,7 +22,7 @@ interface TransactionCreateState {
     setEditData: (data: Partial<TransactionCreateState>) => void;
 }
 
-const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name"> = {
+const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name" | "isTemplateMode"> = {
     editingId: undefined,
     step: 1,
     amount: 0,
@@ -30,6 +31,7 @@ const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount"
     brand_logo_url: "",
     category_id: "",
     name: "",
+    isTemplateMode: false,
 }
 
 export const useTransactionCreateStore = create<TransactionCreateState>((set) => ({

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, Transaction, Category
+from .models import UserProfile, Transaction, Category, Templates
 
 class TransactionSerializer(serializers.ModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')
@@ -32,3 +32,22 @@ class UserProfileSerializer(serializers.ModelSerializer):
                   'profile_picture',
                   'transactions'
                   )
+
+class TemplateSerializer(serializers.ModelSerializer):
+    category_name = serializers.ReadOnlyField(source='category.name')
+    goal_title = serializers.ReadOnlyField(source='goal.title')
+
+    class Meta:
+        model = Templates
+        fields = (
+            'id',
+            'template_name',
+            'amount',
+            'name',
+            'description',
+            'brand_logo_url',
+            'category',
+            'goal',
+            'category_name',
+            'goal_title'
+        )

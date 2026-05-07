@@ -44,9 +44,6 @@
   .light_liquid-effect {
     @apply bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-2xl;
   }
-  .bg-main-gradient {
-    @apply bg-linear-to-br from-[#1b1e2f] via-[#11131f] to-[#0a0b14];
-  }
   .bg-auth-gradient {
     @apply bg-linear-to-t from-[#0d1117] to-[#202632];
   }

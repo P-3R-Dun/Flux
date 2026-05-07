@@ -1,13 +1,15 @@
 import { useState, useRef } from 'react';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import { Trash2, Edit3, AlertTriangle, X } from 'lucide-react';
+import { Avatar } from '../shared/Avatar';
 
 export const TransactionItem = ({ 
     transaction, 
     expandedId, 
     setExpandedId,
     onEdit,
-    onDelete
+    onDelete,
+    onClickItem // НОВЫЙ ПРОПС
 }: any) => {
     const isExpanded = expandedId === transaction.id;
     
@@ -25,7 +27,7 @@ export const TransactionItem = ({
         if (timerRef.current) clearTimeout(timerRef.current);
     };
 
-    const handleDragEnd = (event: any, info: any) => {
+    const handleDragEnd = (_: any, info: any) => {
         if (info.offset.x < -50) {
             setShowDeleteConfirm(true);
         }
@@ -58,13 +60,23 @@ export const TransactionItem = ({
             e.preventDefault();
             return;
         }
-        setExpandedId(isExpanded ? null : transaction.id);
+        // Если передан кастомный обработчик клика (для шаблонов), вызываем его
+        if (onClickItem) {
+            onClickItem(transaction);
+        } else {
+            // Иначе стандартно раскрываем карточку
+            setExpandedId(isExpanded ? null : transaction.id);
+        }
     };
 
     const handleDeleteConfirm = () => {
         setShowDeleteConfirm(false);
         if (onDelete) onDelete(transaction.id);
     };
+
+    const numAmount = Number(transaction.amount);
+    const isIncome = numAmount > 0;
+    const isZero = numAmount === 0;
 
     return (
         <div className="relative w-full shrink-0">
@@ -89,7 +101,7 @@ export const TransactionItem = ({
                 className='relative z-10 rounded-3xl bg-[#202632] py-2 px-4 flex flex-col w-full cursor-pointer overflow-hidden select-none touch-manipulation'
             >
                 <div className="flex items-center justify-between w-full pointer-events-none">
-                    <div className='flex gap-4'>
+                    <div className='flex gap-4 flex-1 min-w-0'>
                         <div className='w-12 h-12 rounded-full bg-[#2A314A] flex items-center justify-center overflow-hidden shrink-0'>
                             {transaction.brand_logo_url ? (
                                 <img src={transaction.brand_logo_url} 
@@ -97,19 +109,17 @@ export const TransactionItem = ({
                                     className='w-full h-full object-contain'
                                 />
                             ) : (
-                                <span className='text-lg text-white font-bold uppercase'>
-                                    {transaction.name ? transaction.name[0] : 'T'}
-                                </span>
+                                <Avatar name={transaction.name} w="w-12" h="h-12"/>
                             )}
                         </div>
-                        <div className='pt-1.5'>
-                            <h3 className='text-md'>{transaction.name}</h3>
-                            <p className='text-xs text-gray-500'>{transaction.category_name || transaction.goal_title}</p>
+                        <div className='pt-1.5 flex-1 min-w-0'>
+                            <h3 className='text-md truncate text-white'>{transaction.name}</h3>
+                            <p className='text-xs text-gray-500 truncate'>{transaction.category_name || transaction.goal_title}</p>
                         </div>
                     </div>
-                    <div className='flex flex-col items-end'>
-                        <p className={`text-md px-4 ${Number(transaction.amount) >= 0 ? 'text-[#86CF78]' : 'text-[#FF5C5C]'}`}>
-                            {Number(transaction.amount) >= 0 ? '+' : ''}{transaction.amount}
+                    <div className='flex flex-col items-end shrink-0'>
+                        <p className={`text-md px-4 ${isIncome ? 'text-[#86CF78]' : isZero ? 'text-white' : 'text-[#FF5C5C]'}`}>
+                            {isIncome ? '+' : ''}{transaction.amount}
                         </p>
                         <p className='text-xs px-4 text-gray-500'>{new Date(transaction.date).toLocaleDateString()}</p>
                     </div>
@@ -139,7 +149,10 @@ export const TransactionItem = ({
                         animate={{ opacity: 1 }} 
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm p-4"
-                        onClick={() => setShowActionMenu(false)} 
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setShowActionMenu(false);
+                        }} 
                     >
                         <motion.div 
                             initial={{ scale: 0.95, opacity: 0 }}
@@ -156,7 +169,8 @@ export const TransactionItem = ({
                             </div>
                             
                             <button 
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     setShowActionMenu(false);
                                     if (onEdit) onEdit(transaction);
                                 }}
@@ -167,7 +181,8 @@ export const TransactionItem = ({
                             </button>
                             
                             <motion.button 
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     setShowActionMenu(false);
                                     setShowDeleteConfirm(true);
                                 }}
@@ -176,6 +191,12 @@ export const TransactionItem = ({
                                 <Trash2 className="w-5 h-5" />
                                 <span className="font-medium text-lg">Delete</span>
                             </motion.button>
+
+                            <div className="px-4 py-3 mt-1 border-t border-white/5">
+                                <span className="text-xs text-gray-500 block text-center wrap-break-word">
+                                    {transaction.name}
+                                </span>
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
@@ -188,6 +209,7 @@ export const TransactionItem = ({
                         animate={{ opacity: 1 }} 
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-60 flex justify-center items-center bg-black/70 backdrop-blur-sm p-4"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }}
@@ -200,18 +222,24 @@ export const TransactionItem = ({
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">Delete Transaction?</h3>
                             <p className="text-sm text-gray-400 mb-6">
-                                Are you sure you want to delete this transaction? This action cannot be undone.
+                                Are you sure you want to delete this? This action cannot be undone.
                             </p>
                             
                             <div className="flex w-full gap-3">
                                 <button 
-                                    onClick={() => setShowDeleteConfirm(false)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowDeleteConfirm(false);
+                                    }}
                                     className="flex-1 py-3 rounded-2xl bg-[#2A314A] text-white font-medium hover:bg-[#374056] transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button 
-                                    onClick={handleDeleteConfirm}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteConfirm();
+                                    }}
                                     className="flex-1 py-3 rounded-2xl bg-[#FF5C5C] text-white font-medium shadow-lg shadow-[#FF5C5C]/20 hover:bg-[#ff4444] transition-colors"
                                 >
                                     Delete

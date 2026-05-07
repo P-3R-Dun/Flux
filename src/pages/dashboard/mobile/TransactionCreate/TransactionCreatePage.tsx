@@ -9,7 +9,7 @@ import { StepName } from "./StepName";
 import { StepDescription } from "./StepDescription";
 
 export const TransactionCreatePage = () => {
-    const { step, prevStep, reset } = useTransactionCreateStore();
+    const { step, isTemplateMode, prevStep, setStep, reset } = useTransactionCreateStore();
     const navigate = useNavigate();
 
     const handleBack = () => {
@@ -17,6 +17,10 @@ export const TransactionCreatePage = () => {
             reset();
             navigate(-1);
         } else {
+            if (isTemplateMode && step === 4) {
+                setStep(2);
+                return
+            }
             prevStep();
         }
     }
@@ -33,9 +37,9 @@ export const TransactionCreatePage = () => {
     }
 
     return (
-        <div className="flex flex-col h-dvh overflow-y-auto p-4 bg-main-gradient">
+        <div className="flex flex-col h-dvh overflow-y-auto p-4">
             <motion.button onClick={() => {handleBack(); }}
-            whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.95 }} className="bg-[#374056] rounded-2xl p-2 w-12 h-12">
+            whileHover={{ scale: 1.15 }} whileTap={{ scale: 0.95 }} className="bg-[#252836] rounded-2xl p-2 w-12 h-12">
                 <div className="flex items-center justify-center">
                     <ChevronLeft className="w-6 h-6"/>
                 </div>

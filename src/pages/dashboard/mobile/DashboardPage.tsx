@@ -134,15 +134,15 @@ export const Dashboard = () => {
 
             <motion.div variants={itemVariants} className='flex items-center justify-center gap-10 select-none shrink-0'>
                 <motion.button whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/add-transaction")} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
+                    <div className='w-16 h-16 rounded-3xl bg-[#252836] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
                     <span className="text-sm">Add</span>
                 </motion.button>
                 <motion.button whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/templates")} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Folder className='w-6 h-6'/></div>
+                    <div className='w-16 h-16 rounded-3xl bg-[#252836] flex items-center justify-center'><Folder className='w-6 h-6'/></div>
                     <span className="text-sm">Templates</span>
                 </motion.button>
                 <motion.button onClick={() => {}} whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} className='flex flex-col items-center gap-2 cursor-pointer'>
-                    <div className='w-16 h-16 rounded-3xl bg-[#5D73B3] flex items-center justify-center'><Rocket className='w-6 h-6'/></div>
+                    <div className='w-16 h-16 rounded-3xl bg-[#252836] flex items-center justify-center'><Rocket className='w-6 h-6'/></div>
                     <span className="text-sm">Boost</span>
                 </motion.button>
             </motion.div>

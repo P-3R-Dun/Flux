@@ -53,3 +53,34 @@ export const useDeleteTransaction = () => {
 
     return { execute, isLoading, error, isSuccess };
 };
+
+export const usePostTemplate = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<any>(null);
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const execute = useCallback(async (data: Omit<TransactionDT, "id" | "date" | "amount" | "category"> & { 
+        template_name: string;
+        amount: number | string| null;
+        category: string | null;
+
+     }, 
+     token: string
+    ) => {
+        setIsLoading(true);
+        setError(null);
+        setIsSuccess(false);
+        try {
+            const result = await dashboardService.postTemplate(data, token);
+            setIsSuccess(true);
+            return result;
+        } catch (err) {
+            setError(err);
+            setIsSuccess(false);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }   }, []);
+
+    return { execute, isLoading, error, isSuccess };
+};

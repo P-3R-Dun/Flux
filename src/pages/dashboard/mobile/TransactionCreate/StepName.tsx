@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 
 export const StepName = () => {
     const token = localStorage.getItem('access') || sessionStorage.getItem('access');   
-    const { name, brand_logo_url, setField, nextStep } = useTransactionCreateStore(); 
+    const { name, brand_logo_url, isTemplateMode, setField, nextStep } = useTransactionCreateStore(); 
     const { results, isLoading } = useBrandSearch(token || '', name);
 
     const containerVariants: Variants = {
@@ -116,11 +116,11 @@ export const StepName = () => {
             <motion.div variants={itemVariants} className="mt-auto pt-8 shrink-0">
                 <motion.button
                     onClick={nextStep}
-                    disabled={!name.trim() || brand_logo_url === ''}
-                    whileHover={{ scale: !name.trim() || brand_logo_url === '' ? 1 : 1.02 }} 
-                    whileTap={{ scale: !name.trim() || brand_logo_url === '' ? 1 : 0.98 }} 
-                    className={`w-full rounded-2xl p-4 text-lg flex items-center justify-center select-none text-white transition-all duration-300 ${
-                        !name.trim() || brand_logo_url === '' 
+                    disabled={!isTemplateMode && !name.trim()}
+                    whileHover={{ scale: !isTemplateMode && !name.trim() ? 1 : 1.02 }} 
+                    whileTap={{ scale: !isTemplateMode && !name.trim() ? 1 : 0.98 }} 
+                    className={`w-full rounded-2xl p-4 text-lg flex items-center justify-center select-none text-white transition-all duration-300 
+                        ${(!isTemplateMode && !name.trim()) 
                             ? 'bg-button-disabled-gradient cursor-not-allowed' 
                             : 'bg-button-gradient'
                     }`}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Routes, Route, Navigate, useLocation } from 'react-router'
 import { AuthLayout } from '@/components/layout/shared/AuthLayout.tsx'
 import { AuthGuard, GuestGuard } from '@/components/guards/GuardSys.tsx'
@@ -14,6 +14,7 @@ import { AppLayout } from '@/components/layout/mobile/AppLayout.tsx'
 import { useAuthStore } from '@/store/useAuthStore.ts'
 import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreate/TransactionCreatePage.tsx'
 import { SettingPage } from '@/pages/dashboard/mobile/SettingPage.tsx'
+import { TemplatesPage } from '@/pages/dashboard/mobile/TemplatesPage'
 
 function App() {
   const location = useLocation();
@@ -72,6 +73,7 @@ function App() {
                 <Route path="/settings" element={<SettingPage />} />
               </Route>
               <Route path="/add-transaction" element={<TransactionCreatePage />} />
+              <Route path="/templates" element={<TemplatesPage />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -39,6 +39,17 @@ export interface BrandDT {
     brand_logo_url: string;
 }
 
+export interface TemplateDT {
+    id: number;
+    template_name: string;
+    amount: string | number | null;
+    category: string | null;
+    name: string;
+    description: string;
+    brand_logo_url: string | null;
+    category_name?: string | null;
+}
+
 export const dashboardService = {
     async getProfile(token: string): Promise<ProfileDT> {
         const response = await fetch(`${API_URL}/profile/me/`, {
@@ -115,6 +126,67 @@ export const dashboardService = {
             const result = await response.json();
             throw result
         };
+
+        return true;
+    },
+
+    async postTemplate(data: Omit<TransactionDT, "id" | "date" | "amount" | "category"> & { 
+        template_name: string; 
+        amount: number | string | null; 
+        category: string | null; 
+    }, token: string) {
+        const response = await fetch(`${API_URL}/templates/create/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+                body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw result
+        };
+
+        return true;
+    },
+
+    async getTemplates(token: string): Promise<TemplateDT[]> {
+        const response = await fetch(`${API_URL}/templates/view/`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        });
+    
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+        return result;
+    },
+
+    async updateTemplate(id: number, data: Partial<TemplateDT>, token: string) {
+        const response = await fetch(`${API_URL}/templates/${id}/update/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+
+        return result;
+    },
+
+    async deleteTemplate(id: number, token: string) {
+        const response = await fetch(`${API_URL}/templates/${id}/delete/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw result;
+        }
 
         return true;
     }

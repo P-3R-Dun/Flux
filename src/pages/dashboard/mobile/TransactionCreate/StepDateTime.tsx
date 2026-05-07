@@ -4,7 +4,7 @@ import { WheelPicker } from '@/components/wheel-picker';
 import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
 
 export const StepDateTime = () => {
-    const { date, setField, nextStep } = useTransactionCreateStore(); 
+    const { date, name, brand_logo_url, setField, nextStep, setStep } = useTransactionCreateStore(); 
     const initialDate = date ? new Date(date) : new Date();
     const [selectionType, setSelectionType] = useState<'Date' | 'Time'>('Date'); 
     
@@ -14,35 +14,21 @@ export const StepDateTime = () => {
     const [H, setH] = useState(String(initialDate.getHours()).padStart(2, '0'));
     const [Min, setMin] = useState(String(initialDate.getMinutes()).padStart(2, '0'));
 
-    const Day = Array.from({length: 31}, (_, i) => ({
-        label: (i + 1).toString(),
-        value: (i + 1).toString().padStart(2, '0')
-    }));
-
-    const Month = Array.from({length: 12}, (_, i) => ({
-        label: (i + 1).toString(),
-        value: (i + 1).toString().padStart(2, '0')
-    }));
-
-    const Year = Array.from({length: 50}, (_, i) => {
-        const year = (2010 + i).toString();
-        return { label: year, value: year };
-    });
-
-    const Hours = Array.from({length: 24}, (_, i) => ({
-        label: i.toString(),
-        value: i.toString().padStart(2, '0') 
-    }));
-
-    const Minutes = Array.from({length: 60}, (_, i) => ({
-        label: i.toString(),
-        value: i.toString().padStart(2, '0')
-    }));
+    const Day = Array.from({length: 31}, (_, i) => ({ label: (i + 1).toString(), value: (i + 1).toString().padStart(2, '0') }));
+    const Month = Array.from({length: 12}, (_, i) => ({ label: (i + 1).toString(), value: (i + 1).toString().padStart(2, '0') }));
+    const Year = Array.from({length: 50}, (_, i) => { const year = (2010 + i).toString(); return { label: year, value: year }; });
+    const Hours = Array.from({length: 24}, (_, i) => ({ label: i.toString(), value: i.toString().padStart(2, '0') }));
+    const Minutes = Array.from({length: 60}, (_, i) => ({ label: i.toString(), value: i.toString().padStart(2, '0') }));
 
     const handleSubmit = () => {
         const finalDateTime = `${Y}-${M}-${D}T${H}:${Min}:00`;
         setField('date', finalDateTime);
-        nextStep();
+        
+        if (name && brand_logo_url !== null) {
+            setStep(5);
+        } else {
+            nextStep();
+        }
     };
 
     const pickerClassNames = {
@@ -95,18 +81,9 @@ export const StepDateTime = () => {
                             transition={{ duration: 0.2 }}
                             className='flex flex-row w-full justify-center'
                         >
-                            <WheelPicker 
-                                options={Day} defaultValue={D} onValueChange={setD} 
-                                classNames={pickerClassNames}
-                            />
-                            <WheelPicker 
-                                options={Month} defaultValue={M} onValueChange={setM} 
-                                classNames={pickerClassNames}
-                            />
-                            <WheelPicker 
-                                options={Year} defaultValue={Y} onValueChange={setY} 
-                                classNames={pickerClassNames}
-                            />
+                            <WheelPicker options={Day} defaultValue={D} onValueChange={setD} classNames={pickerClassNames} />
+                            <WheelPicker options={Month} defaultValue={M} onValueChange={setM} classNames={pickerClassNames} />
+                            <WheelPicker options={Year} defaultValue={Y} onValueChange={setY} classNames={pickerClassNames} />
                         </motion.div>
                     ) : (
                         <motion.div 
@@ -117,14 +94,8 @@ export const StepDateTime = () => {
                             transition={{ duration: 0.2 }}
                             className='flex flex-row w-full justify-center'
                         >
-                            <WheelPicker 
-                                options={Hours} defaultValue={H} onValueChange={setH} 
-                                classNames={pickerClassNames}
-                            />
-                            <WheelPicker 
-                                options={Minutes} defaultValue={Min} onValueChange={setMin} 
-                                classNames={pickerClassNames}
-                            />
+                            <WheelPicker options={Hours} defaultValue={H} onValueChange={setH} classNames={pickerClassNames} />
+                            <WheelPicker options={Minutes} defaultValue={Min} onValueChange={setMin} classNames={pickerClassNames} />
                         </motion.div>
                     )}
                 </AnimatePresence>

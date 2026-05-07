@@ -15,8 +15,8 @@ const DynamicIcon = ({ name, className }: { name: string; className?: string }) 
 }
 
 export const StepCategory = () => {
-    const { category_id, amount, setField, nextStep } = useTransactionCreateStore();
-    const transactionType = amount < 0 ? 'expense' : 'income';
+    const { category_id, amount, name, brand_logo_url, isTemplateMode, nextStep, setField, setStep } = useTransactionCreateStore();
+    const transactionType = (amount < 0 || Object.is(amount, -0)) ? 'expense' : 'income';
     const [localCategory, setLocalCategory] = useState(category_id || '');
     const { fetchCategories, isLoadingCategories, categories } = useDashboardData();
 
@@ -25,58 +25,41 @@ export const StepCategory = () => {
         if (categories.length === 0) {
             fetchCategories(token || '');
         }
-    }, []);
+    }, [categories.length, fetchCategories]);
 
     const handleSubmit = () => {
         setField('category_id', localCategory);
-        nextStep();
+        if (isTemplateMode) {
+            setStep(4);
+        } else {
+            if (name && brand_logo_url !== null) {
+                setStep(5);
+            } else {
+                nextStep();
+            }
+        }
     }
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: { staggerChildren: 0.1 }
-        },
-        exit: { 
-            opacity: 0, 
-            transition: { staggerChildren: 0.05, staggerDirection: -1 }
-        }
+        show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+        exit: { opacity: 0, transition: { staggerChildren: 0.05, staggerDirection: -1 } }
     };
 
     const itemVariants: Variants = {
         hidden: { opacity: 0, y: 20 },
-        show: { 
-            opacity: 1, 
-            y: 0, 
-            transition: { type: 'spring', stiffness: 300, damping: 24 } 
-        },
+        show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
         exit: { opacity: 0, y: -20, transition: { duration: 0.2 } }
     };
 
     const categoryGridVariants: Variants = {
         hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: { 
-                staggerChildren: 0.06,
-                delayChildren: 0.1
-            }
-        }
+        show: { opacity: 1, transition: { staggerChildren: 0.06, delayChildren: 0.1 } }
     };
 
     const categoryKeyVariants: Variants = {
         hidden: { opacity: 0, scale: 0.8, y: 10 },
-        show: { 
-            opacity: 1, 
-            scale: 1, 
-            y: 0,
-            transition: { 
-                type: 'spring', 
-                stiffness: 400, 
-                damping: 20 
-            } 
-        }
+        show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 400, damping: 20 } }
     };
 
     return (
@@ -97,7 +80,7 @@ export const StepCategory = () => {
                 variants={categoryGridVariants}
                 initial='hidden'
                 animate='show'
-                className='grid grid-cols-3 gap-3 mb-auto min-h-0 overflow-y-auto'
+                className='grid grid-cols-3 gap-3 mb-auto min-h-0 overflow-y-auto scrollbar-hide'
             >
                 {categories.filter((category) => category.type === transactionType).map((category) => {
                     const isActive = category.id === localCategory;
@@ -109,9 +92,7 @@ export const StepCategory = () => {
                             whileHover={{ scale: 1.03, backgroundColor: '#3A4368' }}
                             whileTap={{ scale: 0.95 }}
                             className={`relative flex flex-col items-center justify-center p-3 h-28 rounded-2xl cursor-pointer transition-colors duration-200 select-none ${
-                                isActive 
-                                    ? 'bg-[#3A4368] border border-[#6B79B5]' 
-                                    : 'bg-[#252836] border border-transparent'
+                                isActive ? 'bg-[#3A4368] border border-[#6B79B5]' : 'bg-[#252836] border border-transparent'
                             }`}
                         >
                             {isActive && (
@@ -138,11 +119,11 @@ export const StepCategory = () => {
             <motion.div variants={itemVariants} className="mt-8 shrink-0">
                 <motion.button
                     onClick={handleSubmit}
-                    disabled={!localCategory || isLoadingCategories}
+                    disabled={(!localCategory && !isTemplateMode) || isLoadingCategories}
                     whileHover={{ scale: (!localCategory || isLoadingCategories) ? 1 : 1.02 }} 
                     whileTap={{ scale: (!localCategory || isLoadingCategories) ? 1 : 0.98 }} 
                     className={`w-full rounded-2xl p-4 text-lg flex items-center justify-center select-none text-white transition-all duration-300 ${
-                        (!localCategory || isLoadingCategories) 
+                        ((!localCategory && !isTemplateMode) || isLoadingCategories) 
                             ? 'bg-button-disabled-gradient cursor-not-allowed' 
                             : 'bg-button-gradient'
                     }`}

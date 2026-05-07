@@ -6,8 +6,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-from .models import UserProfile, Category, Transaction
-from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer
+from .models import UserProfile, Category, Transaction, Templates
+from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer, TemplateSerializer
 
 class CurrentUserProfileView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -87,3 +87,32 @@ class TransactionDeleteView(DestroyAPIView):
 
     def get_queryset(self):
         return Transaction.objects.filter(user=self.request.user)
+
+class TemplateCreateView(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Templates.objects.all()
+    serializer_class = TemplateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class TemplateView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        templates = Templates.objects.filter(user=request.user)
+        serializer = TemplateSerializer(templates, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class TemplateUpdateView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TemplateSerializer
+
+    def get_queryset(self):
+        return Templates.objects.filter(user=self.request.user)
+
+class TemplateDeleteView(DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = TemplateSerializer
+
+    def get_queryset(self):
+        return Templates.objects.filter(user=self.request.user)
