@@ -3,7 +3,8 @@ from django.urls import path
 from .views import (CurrentUserProfileView, CategoryView, BrandFetchView,
                     TransactionCreateView, TransactionUpdateView, TransactionDeleteView,
                     TemplateCreateView, TemplateView, TemplateUpdateView, TemplateDeleteView,
-                    WalletUpdateView, WalletDeleteView, WalletCreateView, WalletView, FeedbackView)
+                    WalletUpdateView, WalletDeleteView, WalletCreateView, WalletView,
+                    FeedbackView, AccountDeleteView)
 
 urlpatterns = [
     path('profile/me/', CurrentUserProfileView.as_view(), name='current-user-profile'),
@@ -21,4 +22,5 @@ urlpatterns = [
     path('wallets/create/', WalletCreateView.as_view(), name='wallet-create'),
     path('wallets/view/', WalletView.as_view(), name='wallet-view'),
     path('feedback/', FeedbackView.as_view(), name='feedback'),
+    path('profile/delete/', AccountDeleteView.as_view(), name='account-delete'),
 ]

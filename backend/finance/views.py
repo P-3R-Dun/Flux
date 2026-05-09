@@ -194,3 +194,11 @@ class FeedbackView(APIView):
 
         send_telegram_message(tg_text)
         return Response({"status": "success"}, status=200)
+
+class AccountDeleteView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request):
+        user = request.user
+        user.delete()
+        return Response({"status": "Account deleted permanently"}, status=status.HTTP_204_NO_CONTENT)

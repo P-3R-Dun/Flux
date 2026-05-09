@@ -7,15 +7,16 @@ import { FingerprintPattern, KeyRound, Wallet, MessagesSquare, LogOut,
     Trash2, Edit3, AlertTriangle} from "lucide-react"
 import { Avatar } from "@/components/ui/shared/Avatar";
 import { useSetPassword } from "@/hooks/useAuth";
-import { useSetAvatar, useSetName } from "@/hooks/useProfile"
+import { useSetAvatar, useSetName, useDeleteAccount } from "@/hooks/useProfile"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useWallets } from "@/hooks/useWallets"
 import { useFeedback } from "@/hooks/useFeedback";
+import { LoadingSpinner } from "@/components/ui/shared/LoadingSpinner";
 
 const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void, onProfileUpdate: (token: string) => void }) => {
     const [firstName, setFirstName] = useState(profile?.first_name || '');
     const [lastName, setLastName] = useState(profile?.last_name || '');
-    const { isLoading, isSuccess, setName } = useSetName();
+    const { isSuccess, setName } = useSetName();
     const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
 
     useEffect(() => {
@@ -74,7 +75,7 @@ const AuthModal = ({ profile, onClose, showToast }: { profile: any, onClose: () 
     )
 }
 
-const PasswordModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
+const PasswordModal = ({onClose, showToast }: {onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
     const {isLoading, isSuccess, setPassword } = useSetPassword()
     const [ currentPassword, setCurrentPassword ] = useState('');
     const [ newPassword, setNewPassword ] = useState('');
@@ -341,7 +342,7 @@ const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose:
                     }`}
                 >
                     {isLoading ? (
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+                        <LoadingSpinner />
                     ) : (
                         "Send"
                     )}
@@ -351,13 +352,75 @@ const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose:
     );
 };
 
-const DeleteModal = ({ profile, onClose }: { profile: any, onClose: () => void }) => {
+const DeleteModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
+    const [confirmName, setConfirmName] = useState('');
+    const { executeDelete, isLoading } = useDeleteAccount();
+    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
+    const navigate = useNavigate();
+
+    const isConfirmed = confirmName === profile?.username;
+
+    const handleDelete = async () => {
+        if (!isConfirmed) return;
+
+        try {
+            await executeDelete(token);
+            showToast("Account deleted. We're sad to see you go.", "success");
+            navigate('/');
+        } catch (err) {
+            showToast("Failed to delete account", "error");
+        }
+    };
+
     return (
-        <div>
-            <p>Damn</p>
+        <div className="flex flex-col items-center gap-6">
+            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-8 h-8 text-[#FF5C5C]" />
+            </div>
+
+            <div className="text-center">
+                <h2 className="text-2xl font-bold text-white">Delete Account?</h2>
+                <p className="text-gray-400 mt-2 text-sm">
+                    This action is <span className="text-[#FF5C5C] font-bold italic">permanent</span>. 
+                    All your wallets, transactions, and settings will be wiped forever.
+                </p>
+            </div>
+
+            <div className="w-full space-y-3">
+                <p className="text-xs text-gray-500 text-center">
+                    To confirm, type <span className="text-white font-mono select-all">{profile?.username}</span> below:
+                </p>
+                <input 
+                    type="text"
+                    value={confirmName}
+                    onChange={(e) => setConfirmName(e.target.value)}
+                    placeholder="Enter your username"
+                    className="w-full bg-[#252836] text-white p-4 rounded-xl outline-none border border-transparent focus:border-red-500 transition-all text-center font-mono"
+                />
+            </div>
+
+            <div className="flex gap-3 w-full">
+                <button 
+                    onClick={onClose}
+                    className="flex-1 bg-[#252836] text-white p-4 rounded-xl font-semibold"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onClick={handleDelete}
+                    disabled={!isConfirmed || isLoading}
+                    className={`flex-1 p-1 rounded-xl font-bold text-white transition-all ${
+                        isConfirmed && !isLoading
+                        ? 'bg-[#FF5C5C] shadow-lg shadow-red-500/20' 
+                        : 'bg-gray-800 opacity-50 cursor-not-allowed'
+                    }`}
+                >
+                    {isLoading ? <LoadingSpinner />: "Delete"}
+                </button>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 const LogoutModal = ({ onClose }: { onClose: () => void }) => {
     const logout = useAuthStore((state) => state.logout);
@@ -417,20 +480,37 @@ const SettingOption = ({icon, label, onClick, isDanger = false}: {icon: React.Re
 }
 
 export const SettingPage = () => {
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const { profile, fetchProfile } = useDashboardData();
+    useEffect(() => {
+    const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+            const token = localStorage.getItem('access') || sessionStorage.getItem('access');
+            if (token) {
+                fetchProfile(token);
+            }
+        }
+    };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('focus', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('focus', handleVisibilityChange);
+        };
+    }, [fetchProfile]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
     const [activeModal, setActiveModal] = useState<'profile' | 'password' | '2fa' | 'wallets' | 'feedback' | 'delete' | 'logout' | null>(null);
     const displayName = profile?.first_name 
         ? `${profile.first_name} ${profile.last_name || ''}`.trim() 
         : profile?.username || '';
 
-    const renderModalContent = (activeModal, profile, onClose) => {
+    const renderModalContent = (activeModal, profile) => {
         switch (activeModal) {
             case 'profile':
                 return <ProfileModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast} onProfileUpdate={fetchProfile} />;
             case 'password':
-                return <PasswordModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast}/>;
+                return <PasswordModal onClose={() => setActiveModal(null)} showToast={showToast}/>;
             case '2fa':
                 return <AuthModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast}/>; 
             case 'wallets':
@@ -440,13 +520,13 @@ export const SettingPage = () => {
             case 'delete':
                 return <DeleteModal onClose={() => setActiveModal(null)} profile={profile} />;
             case 'logout':
-                return <LogoutModal onClose={() => setActiveModal(null)} profile={profile} />;
+                return <LogoutModal onClose={() => setActiveModal(null)} />;
             default:
                 return null;
         }
     }
 
-    const { setAvatar, isLoading: isAvatarLoading } = useSetAvatar();
+    const { setAvatar } = useSetAvatar();
     const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
     const showToast = (message: string, type: 'success' | 'error' = 'success') => {
         setToast({ message, type });

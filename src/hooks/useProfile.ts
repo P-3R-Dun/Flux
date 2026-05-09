@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { extractErrorMessage } from './useAuth'
 import { dashboardService } from '../services/dashboard.service'
 import { authService } from '@/services/auth.service';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export const useSetName = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -49,4 +50,22 @@ export const useSetAvatar = () => {
     };
 
     return { setAvatar, isLoading, isSuccess, error };
+};
+
+export const useDeleteAccount = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const logout = useAuthStore(state => state.logout);
+
+    const executeDelete = async (token: string) => {
+        setIsLoading(true);
+        try {
+            await dashboardService.deleteAccount(token);
+            logout();
+            return true;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { executeDelete, isLoading };
 };

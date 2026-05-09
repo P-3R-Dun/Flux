@@ -262,7 +262,7 @@ export const dashboardService = {
     },
 
     async sendFeedback(message: string, token: string) {
-    const response = await fetch(`${API_URL}/feedback/`, {
+        const response = await fetch(`${API_URL}/feedback/`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
             body: JSON.stringify({ message })
@@ -274,5 +274,15 @@ export const dashboardService = {
         }
 
         return await response.json();
+    },
+
+    async deleteAccount(token: string) {
+        const response = await fetch(`${API_URL}/profile/delete/`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token.trim()}` }
+        });
+        if (!response.ok) throw await response.json();
+        
+        return true;
     }
 }
