@@ -15,8 +15,7 @@ const DynamicIcon = ({ name, className }: { name: string; className?: string }) 
 }
 
 export const StepCategory = () => {
-    const { category_id, amount, name, brand_logo_url, isTemplateMode, nextStep, setField, setStep } = useTransactionCreateStore();
-    const transactionType = (amount < 0 || Object.is(amount, -0)) ? 'expense' : 'income';
+    const { category_id, amount, name, brand_logo_url, isTemplateMode, nextStep, setField, setStep, editingId } = useTransactionCreateStore();    const transactionType = (amount < 0 || Object.is(amount, -0)) ? 'expense' : 'income';
     const [localCategory, setLocalCategory] = useState(category_id || '');
     const { fetchCategories, isLoadingCategories, categories } = useDashboardData();
 
@@ -32,7 +31,7 @@ export const StepCategory = () => {
         if (isTemplateMode) {
             setStep(4);
         } else {
-            if (name && brand_logo_url !== null) {
+            if (!editingId && name && brand_logo_url !== null) {
                 setStep(5);
             } else {
                 nextStep();

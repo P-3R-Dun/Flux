@@ -6,7 +6,7 @@ import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
 import { useDashboardData } from '@/hooks/useDashboardData';
 
 export const StepAmount = () => {
-    const { amount, category_id, name, brand_logo_url, isTemplateMode, setField, setStep, nextStep } = useTransactionCreateStore();
+    const { amount, category_id, name, brand_logo_url, isTemplateMode, setField, setStep, nextStep, editingId } = useTransactionCreateStore();
     const { profile } = useDashboardStore();
     const { categories, fetchCategories } = useDashboardData();
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -75,7 +75,7 @@ export const StepAmount = () => {
         const finalAmount = localType === 'expense' ? -Math.abs(numericValue) : Math.abs(numericValue);
         setField('amount', finalAmount);
 
-        if (!isTemplateMode) {
+        if (!isTemplateMode && !editingId) {
             if (category_id && name && brand_logo_url !== null) {
                 setStep(5);
             } else if (category_id) {

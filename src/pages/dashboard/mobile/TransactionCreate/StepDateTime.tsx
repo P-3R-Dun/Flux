@@ -4,7 +4,7 @@ import { WheelPicker } from '@/components/wheel-picker';
 import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
 
 export const StepDateTime = () => {
-    const { date, name, brand_logo_url, setField, nextStep, setStep } = useTransactionCreateStore(); 
+    const { date, name, brand_logo_url, setField, nextStep, setStep, editingId } = useTransactionCreateStore(); 
     const initialDate = date ? new Date(date) : new Date();
     const [selectionType, setSelectionType] = useState<'Date' | 'Time'>('Date'); 
     
@@ -22,9 +22,8 @@ export const StepDateTime = () => {
 
     const handleSubmit = () => {
         const finalDateTime = `${Y}-${M}-${D}T${H}:${Min}:00`;
-        setField('date', finalDateTime);
-        
-        if (name && brand_logo_url !== null) {
+        setField('date', finalDateTime);        
+        if (!editingId && name && brand_logo_url !== null) {
             setStep(5);
         } else {
             nextStep();
