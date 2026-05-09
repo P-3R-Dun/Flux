@@ -3,7 +3,7 @@ import { dashboardService } from '@/services/dashboard.service';
 import { useDashboardStore } from '@/store/useDashboardStore';
 
 export const useDashboardData = () => {
-    const { profile, categories, setProfile, setCategories,  } = useDashboardStore();
+    const { profile, categories, setProfile, setCategories } = useDashboardStore();
 
     const [isLoadingProfile, setIsLoadingProfile] = useState(false);
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
@@ -60,11 +60,17 @@ export const useDashboardData = () => {
     }, [setProfile, setCategories]);
 
     const balance = useMemo(() => {
-        if (!profile?.transactions) return 0;
-        return profile.transactions.reduce(
-            (sum, transaction) => sum + Number(transaction.amount),
-            0
-        );
+        if (!profile?.transactions || !profile?.wallets) return 0;
+        
+        const activeWallet = profile.wallets.find(w => w.is_active);
+        if (!activeWallet) return 0;
+
+        return profile.transactions
+            .filter(t => t.wallet === activeWallet.id)
+            .reduce(
+                (sum, transaction) => sum + Number(transaction.amount),
+                0
+            );
     }, [profile]);
 
     return {

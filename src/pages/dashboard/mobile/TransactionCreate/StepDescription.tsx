@@ -5,23 +5,32 @@ import { createPortal } from 'react-dom';
 import { useTransactionCreateStore } from '@/store/useTransactionCreateStore';
 import { usePostTransaction, usePostTemplate } from '@/hooks/useTransaction';
 import { TemplateModal } from '@/components/ui/shared/TemplateModal';
-import { useTemplates } from '@/hooks/useTemplates'; // ПРАВИЛЬНЫЙ ИМПОРТ ХУКА
+import { useTemplates } from '@/hooks/useTemplates'; 
+import { useDashboardStore } from '@/store/useDashboardStore';
 
 export const StepDescription = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access');  
-
+    // Убираем получение токена отсюда, чтобы избежать "старого" состояния React
+    
     const { editingId, amount, name, description, category_id, date, brand_logo_url, isTemplateMode, reset, setField } = useTransactionCreateStore();
     const { execute, isLoading } = usePostTransaction();
     const { execute: executeTemplate, isLoading: isTemplateLoading } = usePostTemplate();
-    
     const { updateTemplate, isMutating: isTemplateUpdating } = useTemplates();
+    const profile = useDashboardStore((state) => state.profile);
     
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleSubmit = async () => {
         setErrorMessage(null);
+
+        // 1. Берем самый свежий токен прямо в момент клика (как в консоли)
+        const currentToken = localStorage.getItem('access') || sessionStorage.getItem('access');
+        
+        if (!currentToken) {
+            setErrorMessage("Authorization error: Please log in again.");
+            return;
+        }
 
         if (isTemplateMode) {
             const hasAnyData = 
@@ -39,6 +48,14 @@ export const StepDescription = () => {
             return;
         }
         
+        // 2. Строго находим активный счет
+        const activeWallet = profile?.wallets?.find(w => w.is_active) || profile?.wallets?.[0];
+        
+        if (!activeWallet) {
+            setErrorMessage("Error: No active wallet found to assign this transaction.");
+            return;
+        }
+
         const record = {
             id: editingId,
             amount,
@@ -48,20 +65,31 @@ export const StepDescription = () => {
             date: date || new Date().toISOString(),
             brand_logo_url: brand_logo_url || null,
             goal: null,
-            category_name: null
+            category_name: null,
+            wallet: activeWallet.id, // Гарантированно передаем ID
         };
 
         try {
-            await execute(record, token || '');
+            // Передаем свежий токен
+            await execute(record, currentToken.trim());
             reset();
             navigate('/');
         } catch (error: any) {
-            setErrorMessage(error?.message || "Something went wrong. Please try again.");
+            console.error("API Error:", error);
+            setErrorMessage(error?.detail || error?.message || "Something went wrong. Please try again.");
         }
     };
 
     const handleTemplateSave = async (modalTemplateName: string) => {
         setErrorMessage(null);
+        
+        const currentToken = localStorage.getItem('access') || sessionStorage.getItem('access');
+        if (!currentToken) {
+            setErrorMessage("Authorization error: Please log in again.");
+            return;
+        }
+
+        const activeWallet = profile?.wallets?.find(w => w.is_active) || profile?.wallets?.[0];
 
         const templateData = {
             template_name: modalTemplateName,
@@ -71,21 +99,23 @@ export const StepDescription = () => {
             description: description,
             brand_logo_url: brand_logo_url || null,
             goal: null,
-            category_name: null
+            category_name: null,
+            wallet: activeWallet?.id || null,
         }
         
         try {
             if (editingId) {
-                await updateTemplate(editingId, templateData, token || '');
+                await updateTemplate(editingId, templateData, currentToken.trim());
             } else {
-                await executeTemplate(templateData, token || '');
+                await executeTemplate(templateData, currentToken.trim());
             }
             
             setIsModalOpen(false);
             reset();
             navigate('/templates'); 
         } catch (error: any) {
-            setErrorMessage(error?.message || "Failed to save template. Please try again.");
+            console.error("Template Save Error:", error);
+            setErrorMessage(error?.detail || error?.message || "Failed to save template.");
         }
     }
 

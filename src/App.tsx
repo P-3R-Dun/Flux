@@ -34,7 +34,7 @@ function App() {
 
     const timer = setTimeout(() => {
       setIsTimerLoading(false);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
@@ -70,10 +70,10 @@ function App() {
                 <Route path="/history" element={<Dashboard />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/goals" element={<Dashboard />} />
-                <Route path="/settings" element={<SettingPage />} />
               </Route>
               <Route path="/add-transaction" element={<TransactionCreatePage />} />
               <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/settings" element={<SettingPage />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

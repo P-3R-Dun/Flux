@@ -1,23 +1,34 @@
 import requests
+from django.utils import timezone
+from datetime import timedelta
 from django.db.models import Q
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView, RetrieveUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 from .models import UserProfile, Category, Transaction, Templates
 from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer, TemplateSerializer
+from django.http import Http404
 
-class CurrentUserProfileView(APIView):
+class CurrentUserProfileView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
-    def get(self, request):
+    serializer_class = UserProfileSerializer
+    def get_object(self):
         try:
-            profile = request.user.profile
-            serializer = UserProfileSerializer(profile)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            profile = self.request.user.profile
+            today = timezone.now().date()
+            if profile.last_active_date != today:
+                if profile.last_active_date == today - timedelta(days=1):
+                    profile.focus_streak += 1
+                else:
+                    profile.focus_streak = 1
+                profile.last_active_date = today
+                profile.save()
+            return profile
         except UserProfile.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404
 
 class CategoryView(APIView):
     permission_classes = (IsAuthenticated,)

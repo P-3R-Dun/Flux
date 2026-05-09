@@ -9,6 +9,14 @@ export interface CategoryDT {
     is_default: boolean;
 }
 
+export interface WalletDT {
+    id: number;
+    name: string;
+    currency: string;
+    icon_name: string;
+    is_active: boolean;
+}
+
 export interface TransactionDT {
     id?: number; 
     amount: string | number; 
@@ -19,6 +27,7 @@ export interface TransactionDT {
     category: string | null;
     goal: string | null; 
     category_name?: string | null; 
+    wallet?: number | null;
 }
 
 export interface ProfileDT {
@@ -31,6 +40,7 @@ export interface ProfileDT {
     focus_streak: number; 
     profile_picture: string | null; 
     transactions: TransactionDT[];
+    wallets: WalletDT[];
 }
 
 export interface BrandDT {
@@ -48,6 +58,7 @@ export interface TemplateDT {
     description: string;
     brand_logo_url: string | null;
     category_name?: string | null;
+    wallet?: number | null;
 }
 
 export const dashboardService = {
@@ -188,6 +199,20 @@ export const dashboardService = {
             throw result;
         }
 
+        return true;
+    },
+
+    async updateAvatar(token: string, file: File) {
+        const formData = new FormData();
+        formData.append('profile_picture', file); 
+
+        const response = await fetch(`${API_URL}/profile/me/`, {
+            method: 'PATCH',
+            headers: {'Authorization': `Bearer ${token}`},
+            body: formData,
+        });
+
+        if (!response.ok) throw await response.json();
         return true;
     }
 }

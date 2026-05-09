@@ -40,6 +40,28 @@ const AnimatedBalance = ({ balance, showBalance }: { balance: number, showBalanc
     return <motion.h1 ref={nodeRef} className='text-5xl' />;
 };
 
+const AnimatedStreak = ({ streak }: { streak: number }) => {
+    const nodeRef = useRef<HTMLSpanElement>(null);
+    const prevStreak = useRef(0);
+
+    useEffect(() => {
+        const controls = animate(prevStreak.current, streak, {
+            duration: 1.2,
+            ease: "easeOut",
+            onUpdate(value) {
+                if (nodeRef.current) {
+                    nodeRef.current.textContent = Math.round(value).toString();
+                }
+            }
+        });
+
+        prevStreak.current = streak;
+        return () => controls.stop();
+    }, [streak]);
+
+    return <span ref={nodeRef} className='text-sm font-bold text-[#FF9B40]' />;
+};
+
 export const Dashboard = () => {
     const token = localStorage.getItem('access') || sessionStorage.getItem('access');
     const { startEditing } = useEditTransaction();
@@ -85,22 +107,44 @@ export const Dashboard = () => {
             initial="hidden"
             animate="visible"
         >
+            {/* Header */}
             <motion.div variants={itemVariants} className='flex items-center justify-between p-4 pt-6 shrink-0'>
                 <div className='flex gap-3 items-center'>
-                    <motion.button whileHover={{ scale: 1.05 }} onClick={() => {navigate("/settings")}} className='cursor-pointer'>
-                        <Avatar name={displayName} />
+                    <motion.button whileHover={{ scale: 1.05 }} onClick={() => {navigate("/settings")}} 
+                    className="w-10 h-10 mx-auto rounded-full bg-[#252836] overflow-hidden border-2 border-transparent hover:border-gray-500 cursor-pointer flex items-center justify-center">
+                        {profile?.profile_picture ? (
+                            <img src={profile.profile_picture} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                            <Avatar name={displayName} className="w-24 h-24 text-md font-semibold" />
+                        )}
                     </motion.button>
                     <div className='flex flex-col'>
                         <p className='text-xs text-gray-400 font-medium tracking-wide uppercase'>Welcome back</p>
                         <p className='text-base font-semibold tracking-tight'>{displayName}</p>
                     </div>
                 </div>
-                <div className='flex items-center gap-1.5 bg-[#FF9B40]/10 px-3 py-1.5 rounded-full border border-[#FF9B40]/20'>
-                    <Zap className='w-4 h-4 text-[#FF9B40] fill-[#FF9B40]' />
-                    <span className='text-sm font-bold text-[#FF9B40]'>{profile?.focus_streak ?? 0}</span>
-                </div>
+                
+                {/* Анимированный бейдж стрика */}
+                <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", delay: 0.2 }}
+                    className='flex items-center gap-1.5 bg-[#FF9B40]/10 px-3 py-1.5 rounded-full border border-[#FF9B40]/20'
+                >
+                    <motion.div
+                        animate={{ 
+                            rotate: [0, 15, -15, 10, -10, 0], 
+                            scale: [1, 1.2, 1] 
+                        }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                    >
+                        <Zap className='w-4 h-4 text-[#FF9B40] fill-[#FF9B40]' />
+                    </motion.div>
+                    <AnimatedStreak streak={profile?.focus_streak ?? 0} />
+                </motion.div>
             </motion.div>
 
+            {/* Balance */}
             <motion.div variants={itemVariants} className='flex flex-col items-center gap-2 shrink-0'>
                 <p className='text-lg'>Available Balance ({profile?.currency})</p>
                 <div className='flex gap-2 items-center'>
@@ -128,10 +172,11 @@ export const Dashboard = () => {
                     </div>
                 </div>
                 <div className='flex flex-col items-center gap-1'>
-                    <p className='text-xs'>Goal: None</p>
+                    <p className='text-xs'></p>
                 </div>
             </motion.div>
 
+            {/* Action Buttons */}
             <motion.div variants={itemVariants} className='flex items-center justify-center gap-10 select-none shrink-0'>
                 <motion.button whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/add-transaction")} className='flex flex-col items-center gap-2 cursor-pointer'>
                     <div className='w-16 h-16 rounded-3xl bg-[#252836] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
@@ -147,6 +192,7 @@ export const Dashboard = () => {
                 </motion.button>
             </motion.div>
 
+            {/* Recent Activity */}
             <motion.div 
                 variants={itemVariants} 
                 className='flex-1 min-h-0 bg-[#181D27] rounded-t-4xl shadow-2xl flex flex-col overflow-hidden'

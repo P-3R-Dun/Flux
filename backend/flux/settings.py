@@ -31,9 +31,10 @@ ENV_DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 ENV_EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 ENV_EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 ENV_DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+ENV_SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3w0r)2_r&dn+ke03a6qb4*9^lx@+h1g302_4h+$4h2gaioqgnr'
+SECRET_KEY = ENV_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -64,8 +65,9 @@ AUTHENTICATION_BACKENDS = [
 DJOSER = {
     'LOGIN_FIELD': 'username',
     'SERIALIZERS': {
+        'current_user': 'accounts.serializers.CustomUserSerializer',
+        'user': 'accounts.serializers.CustomUserSerializer',
         'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user': 'djoser.serializers.UserSerializer',
     },
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',

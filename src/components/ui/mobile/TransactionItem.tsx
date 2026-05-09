@@ -109,7 +109,7 @@ export const TransactionItem = ({
                                     className='w-full h-full object-contain'
                                 />
                             ) : (
-                                <Avatar name={transaction.name} w="w-12" h="h-12"/>
+                                <Avatar name={transaction.name} className='w-12 h-12 text-lg'/>
                             )}
                         </div>
                         <div className='pt-1.5 flex-1 min-w-0'>

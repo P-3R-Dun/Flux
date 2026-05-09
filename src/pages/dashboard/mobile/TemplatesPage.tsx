@@ -38,8 +38,7 @@ export const TemplatesPage = () => {
         let startingStep = 1;
         if (template.amount && Number(template.amount) !== 0) startingStep = 2;
         if (startingStep === 2 && template.category) startingStep = 3;
-        if (startingStep === 3 && template.name && template.brand_logo_url !== null) startingStep = 5;
-
+        
         setEditData({
             amount: Number(template.amount) || 0,
             category_id: template.category || "",

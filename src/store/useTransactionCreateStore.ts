@@ -10,6 +10,7 @@ interface TransactionCreateState {
     category_id: string; 
     name: string;
     isTemplateMode: boolean;
+    wallet_id: number | null;
     
     setStep: (step: number) => void,
     nextStep: () => void,
@@ -22,7 +23,7 @@ interface TransactionCreateState {
     setEditData: (data: Partial<TransactionCreateState>) => void;
 }
 
-const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name" | "isTemplateMode"> = {
+const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount" | "date" | "description" | "brand_logo_url" | "category_id" | "name" | "isTemplateMode" | "wallet_id"> = {
     editingId: undefined,
     step: 1,
     amount: 0,
@@ -32,6 +33,7 @@ const initialState: Pick<TransactionCreateState, "editingId" | "step" | "amount"
     category_id: "",
     name: "",
     isTemplateMode: false,
+    wallet_id: null,
 }
 
 export const useTransactionCreateStore = create<TransactionCreateState>((set) => ({
