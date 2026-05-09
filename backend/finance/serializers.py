@@ -18,12 +18,13 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name', 'icon_name', 'is_default', 'type')
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(source='user.first_name', read_only=True)
     last_name = serializers.CharField(source='user.last_name', read_only=True)
     email = serializers.CharField(source='user.email', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
-    transactions = TransactionSerializer(many=True, read_only=True, source='user.transactions')
+    transactions = serializers.SerializerMethodField()
     wallets = WalletSerializer(many=True, read_only=True, source='user.wallets')
 
     class Meta:
@@ -33,13 +34,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'username',
-            'currency',
-            'financial_period',
             'focus_streak',
             'profile_picture',
             'transactions',
             'wallets'
         )
+
+    def get_transactions(self, obj):
+        active_transactions = Transaction.objects.filter(
+            user=obj.user,
+            wallet__is_active=True
+        ).order_by('-date')
+        return TransactionSerializer(active_transactions, many=True).data
 
 class TemplateSerializer(serializers.ModelSerializer):
     category_name = serializers.ReadOnlyField(source='category.name')

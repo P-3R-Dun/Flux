@@ -8,13 +8,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-from .models import UserProfile, Category, Transaction, Templates
-from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer, TemplateSerializer
+from .models import UserProfile, Category, Transaction, Templates, Wallet
+from .serializers import UserProfileSerializer, TransactionSerializer, CategorySerializer, TemplateSerializer, WalletSerializer
 from django.http import Http404
+
 
 class CurrentUserProfileView(RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = UserProfileSerializer
+
     def get_object(self):
         try:
             profile = self.request.user.profile
@@ -107,10 +109,14 @@ class TemplateCreateView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
 class TemplateView(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
-        templates = Templates.objects.filter(user=request.user)
+        templates = Templates.objects.filter(
+            user=request.user,
+            wallet__is_active=True
+        )
         serializer = TemplateSerializer(templates, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -127,3 +133,64 @@ class TemplateDeleteView(DestroyAPIView):
 
     def get_queryset(self):
         return Templates.objects.filter(user=self.request.user)
+
+class WalletUpdateView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = WalletSerializer
+
+    def get_queryset(self):
+        return Wallet.objects.filter(user=self.request.user)
+
+class WalletDeleteView(DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = WalletSerializer
+
+    def get_queryset(self):
+        return Wallet.objects.filter(user=self.request.user)
+
+class WalletCreateView(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Wallet.objects.all()
+    serializer_class = WalletSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class WalletView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        wallets = Wallet.objects.filter(user=request.user)
+        serializer = WalletSerializer(wallets, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+def send_telegram_message(message):
+    token = settings.TELEGRAM_BOT_TOKEN
+    chat_id = settings.TELEGRAM_USER_ID
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+
+    data = {
+        "chat_id": chat_id,
+        "text": message,
+        "parse_mode": "HTML"
+    }
+
+    try:
+        requests.post(url, data=data, timeout=5)
+    except Exception as e:
+        print(f"Telegram error: {e}")
+
+class FeedbackView(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request):
+        message = request.data.get('message')
+        if not message:
+            return Response({"error": "Message is empty"}, status=400)
+        user = request.user
+        tg_text = (
+            f"<b>🚀 New Feedback!</b>\n"
+            f"User: {user.username} ({user.email})\n"
+            f"Text: {message}"
+        )
+
+        send_telegram_message(tg_text)
+        return Response({"status": "success"}, status=200)

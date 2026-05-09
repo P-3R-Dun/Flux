@@ -2,11 +2,15 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { motion, AnimatePresence } from "motion/react"
 import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router";
-import { FingerprintPattern, KeyRound, Wallet, MessagesSquare, LogOut, UserX, ChevronRight, Pencil, ChevronLeft, CircleCheck, CircleX } from "lucide-react"
+import { FingerprintPattern, KeyRound, Wallet, MessagesSquare, LogOut, 
+    UserX, ChevronRight, Pencil, ChevronLeft, CircleCheck, CircleX, Check, 
+    Trash2, Edit3, AlertTriangle} from "lucide-react"
 import { Avatar } from "@/components/ui/shared/Avatar";
 import { useSetPassword } from "@/hooks/useAuth";
 import { useSetAvatar, useSetName } from "@/hooks/useProfile"
 import { useAuthStore } from "@/store/useAuthStore"
+import { useWallets } from "@/hooks/useWallets"
+import { useFeedback } from "@/hooks/useFeedback";
 
 const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void, onProfileUpdate: (token: string) => void }) => {
     const [firstName, setFirstName] = useState(profile?.first_name || '');
@@ -141,21 +145,211 @@ const PasswordModal = ({ profile, onClose, showToast }: { profile: any, onClose:
     )
 }
 
-const WalletsModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
+const WalletsModal = ({ profile, onClose, showToast }: any) => {
+    const [view, setView] = useState<'list' | 'actions' | 'edit' | 'confirm'>('list');
+    const [selectedWallet, setSelectedWallet] = useState<any>(null);
+    
+    const [name, setName] = useState('');
+    const [currency, setCurrency] = useState('UAH');
+
+    const { updateWallet, createWallet, deleteWallet, isLoading } = useWallets();
+    const { fetchProfile } = useDashboardData();
+    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
+
+    const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const handleLongPressStart = (wallet: any) => {
+        pressTimer.current = setTimeout(() => {
+            setSelectedWallet(wallet);
+            setView('actions');
+        }, 600);
+    };
+
+    const handleLongPressEnd = () => {
+        if (pressTimer.current) clearTimeout(pressTimer.current);
+    };
+
+    const onConfirmDelete = async () => {
+        if (selectedWallet.is_active) return;
+        try {
+            await deleteWallet(selectedWallet.id, token);
+            showToast("Wallet deleted", "success");
+            fetchProfile(token);
+            setView('list');
+        } catch (e) { showToast("Error", "error"); }
+    };
+
+    const onSaveEdit = async () => {
+        try {
+            if (selectedWallet) {
+                await updateWallet(selectedWallet.id, { name, currency }, token);
+                showToast("Wallet updated!", "success");
+            } else {
+                await createWallet({ 
+                    name, 
+                    currency, 
+                    icon_name: 'Wallet', 
+                    is_active: false
+                }, token);
+                showToast("New wallet created!", "success");
+            }
+            fetchProfile(token);
+            setView('list');
+            setName('');
+            setCurrency('UAH');
+        } catch (e) { 
+            showToast("Failed to save wallet", "error"); 
+        }
+    };
+
     return (
-        <div>
-            <p>Damn</p>
+        <div className="flex flex-col w-full min-h-75 text-white select-none">
+            <AnimatePresence mode="wait">
+                {view === 'list' && (
+                    <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <h2 className="text-xl font-bold text-center mb-4">Select Wallet</h2>
+                        <div className="flex flex-col gap-2">
+                            {profile?.wallets?.map((w: any) => (
+                                <div
+                                    key={w.id}
+                                    onPointerDown={() => handleLongPressStart(w)}
+                                    onPointerUp={handleLongPressEnd}
+                                    onClick={() => !w.is_active && updateWallet(w.id, {is_active: true}, token).then(() => {fetchProfile(token); showToast("Wallet was successfully switched!", "success"); onClose();})}
+                                    className={`p-4 rounded-2xl flex items-center justify-between border-2 transition-all ${
+                                        w.is_active ? 'bg-[#3A4368] border-[#6B79B5]' : 'bg-[#252836] border-transparent'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Wallet className={w.is_active ? "text-white" : "text-gray-500"} />
+                                        <span>{w.name} <span className="text-xs text-gray-500">({w.currency})</span></span>
+                                    </div>
+                                    {w.is_active && <Check className="text-green-400 w-5 h-5" />}
+                                </div>
+                            ))}
+                            <button onClick={() => { setSelectedWallet(null); setView('edit'); }} className="mt-2 p-4 border-2 border-dashed border-gray-700 rounded-2xl text-gray-500">+ Add New</button>
+                        </div>
+                    </motion.div>
+                )}
+                {view === 'actions' && (
+                    <motion.div key="actions" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex flex-col gap-3">
+                        <h2 className="text-lg font-bold text-center">{selectedWallet?.name}</h2>
+                        <button onClick={() => { setName(selectedWallet.name); setCurrency(selectedWallet.currency); setView('edit'); }} className="flex items-center gap-3 p-4 bg-[#252836] rounded-2xl">
+                            <Edit3 className="text-blue-400" /> Edit Details
+                        </button>
+                        <button 
+                            disabled={selectedWallet?.is_active}
+                            onClick={() => setView('confirm')}
+                            className={`flex items-center gap-3 p-4 rounded-2xl ${selectedWallet?.is_active ? 'bg-gray-800 opacity-50' : 'bg-[#252836]'}`}
+                        >
+                            <Trash2 className="text-[#FF5C5C]" /> 
+                            <p className="text-[#FF5C5C]">{selectedWallet?.is_active ? "Cannot delete active wallet" : "Delete Wallet"}</p>
+                        </button>
+                        <button onClick={() => setView('list')} className="p-4 bg-gray-700 rounded-2xl mt-2">Back</button>
+                    </motion.div>
+                )}
+                {view === 'confirm' && (
+                    <motion.div key="confirm" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
+                        <AlertTriangle className="w-12 h-12 text-[#FF5C5C] mx-auto mb-4" />
+                        <h2 className="text-xl font-bold mb-2">Are you sure?</h2>
+                        <p className="text-gray-400 mb-6">All transactions linked to "{selectedWallet?.name}" will also be affected.</p>
+                        <div className="flex gap-3">
+                            <button onClick={() => setView('actions')} className="flex-1 p-4 bg-gray-700 rounded-2xl">Cancel</button>
+                            <button onClick={onConfirmDelete} className="flex-1 p-4 bg-[#FF5C5C] rounded-2xl font-bold">Yes, Delete</button>
+                        </div>
+                    </motion.div>
+                )}
+                {view === 'edit' && (
+                    <motion.div key="edit" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                        <h2 className="text-xl font-bold mb-4">{selectedWallet ? 'Edit Wallet' : 'New Wallet'}</h2>
+                        <input value={name} onChange={e => setName(e.target.value)} className="w-full bg-[#252836] p-4 rounded-xl mb-3 outline-none" placeholder="Name" />
+                        <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full bg-[#252836] p-4 rounded-xl mb-6 outline-none">
+                            <option value="UAH">UAH (₴)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                        </select>
+                        <div className="flex gap-3">
+                            <button onClick={() => setView('list')} className="flex-1 p-4 bg-gray-700 rounded-2xl">Cancel</button>
+                            <button onClick={onSaveEdit} className="flex-1 p-4 bg-button-gradient rounded-2xl font-bold text-white">Save</button>
+                        </div>
+                    </motion.div>
+                )}
+
+            </AnimatePresence>
         </div>
-    )
-}
+    );
+};
 
 const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
+    const [message, setMessage] = useState('');
+    const { postFeedback, isLoading } = useFeedback();
+    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
+
+    const handleSendFeedback = async () => {
+        if (!message.trim()) {
+            showToast("Please enter some text", "error");
+            return;
+        }
+
+        try {
+            await postFeedback(message, token);
+            showToast("Feedback sent to Telegram!", "success");
+            setMessage('');
+            onClose();
+        } catch (err) {
+            showToast("Failed to send feedback", "error");
+        }
+    };
+
     return (
-        <div>
-            <p>Damn</p>
+        <div className="flex flex-col w-full gap-5">
+            <div className="text-center">
+                <h2 className="text-2xl font-bold text-white">Feedback</h2>
+                <p className="text-gray-400 text-sm mt-1">
+                    Help us improve. What's on your mind?
+                </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <textarea
+                    autoFocus
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Describe your issue or suggestion..."
+                    className="w-full bg-[#252836] text-white p-4 rounded-2xl min-h-37.5 outline-none border border-transparent focus:border-[#6B79B5] transition-all resize-none placeholder:text-gray-600"
+                />
+                <p className="text-[10px] text-gray-500 self-end px-1">
+                    Logged as {profile?.username}
+                </p>
+            </div>
+
+            <div className="flex gap-3">
+                <button
+                    onClick={onClose}
+                    className="flex-1 p-4 bg-[#252836] text-white rounded-xl font-semibold transition-colors hover:bg-[#2d3142]"
+                >
+                    Cancel
+                </button>
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSendFeedback}
+                    disabled={isLoading || !message.trim()}
+                    className={`flex-1 p-4 rounded-xl font-bold text-white transition-all ${
+                        !message.trim() || isLoading 
+                        ? 'bg-gray-700 opacity-50 cursor-not-allowed' 
+                        : 'bg-button-gradient'
+                    }`}
+                >
+                    {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+                    ) : (
+                        "Send"
+                    )}
+                </motion.button>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 const DeleteModal = ({ profile, onClose }: { profile: any, onClose: () => void }) => {
     return (

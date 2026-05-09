@@ -16,17 +16,13 @@ class Wallet(models.Model):
     icon_name = models.CharField(max_length=50, default='Wallet')
     is_active = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            Wallet.objects.filter(user=self.user).exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='profile')
-
-    CURRENCY_CHOICES = [
-        ('USD', 'USD'),
-        ('EUR', 'EUR'),
-        ('UAH', 'UAH'),
-    ]
-
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='UAH')
-    financial_period = models.CharField(max_length=20, default='monthly')
     focus_streak = models.IntegerField(default=0)
     last_active_date = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
@@ -116,25 +112,3 @@ class Templates(models.Model):
     template_name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
     brand_logo_url = models.URLField(null=True, blank=True)
-
-default_categories = [
-            {'name': 'Groceries', 'type': 'expense', 'icon_name': 'ShoppingCart'},
-            {'name': 'Dining Out', 'type': 'expense', 'icon_name': 'Coffee'},
-            {'name': 'Housing & Utilities', 'type': 'expense', 'icon_name': 'Building2'},
-            {'name': 'Transportation', 'type': 'expense', 'icon_name': 'Van'},
-            {'name': 'Health & Medical', 'type': 'expense', 'icon_name': 'ScanHeart'},
-            {'name': 'Subscriptions & Services', 'type': 'expense', 'icon_name': 'Pointer'},
-            {'name': 'Shopping & Personal Care', 'type': 'expense', 'icon_name': 'Handbag'},
-            {'name': 'Entertainment & Hobbies', 'type': 'expense', 'icon_name': 'Gamepad2'},
-            {'name': 'Other', 'type': 'expense', 'icon_name': 'Ellipsis'},
-
-            {'name': 'Salary', 'type': 'income', 'icon_name': 'CircleDollarSign'},
-            {'name': 'Freelance', 'type': 'income', 'icon_name': 'Coins'},
-            {'name': 'Investments', 'type': 'income', 'icon_name': 'Bitcoin'},
-            {'name': 'Rental Income', 'type': 'income', 'icon_name': 'HousePlus'},
-            {'name': 'Cashback', 'type': 'income', 'icon_name': 'BanknoteArrowDown'},
-            {'name': 'Gifts', 'type': 'income', 'icon_name': 'Gift'},
-            {'name': 'Benefits', 'type': 'income', 'icon_name': 'Landmark'},
-            {'name': 'Business Profit', 'type': 'income', 'icon_name': 'BriefcaseBusiness'},
-            {'name': 'Other', 'type': 'income', 'icon_name': 'Ellipsis'}
-        ]

@@ -202,3 +202,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # LOGO.DEV API Settings
 LOGO_DEV_API_KEY = os.getenv('LOGO_DEV_API_KEY')
 LOGO_DEV_PUBLIC_KEY = os.getenv('LOGO_DEV_PUBLIC_KEY')
+
+# Telegram Settings (for Feedback)
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_USER_ID = os.getenv('TELEGRAM_USER_ID')

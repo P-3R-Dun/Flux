@@ -120,6 +120,8 @@ export const StepAmount = () => {
         exit: { opacity: 0, scale: 0.9, transition: { duration: 0.15 } }
     };
 
+    const activeWallet = profile?.wallets?.find(w => w.is_active) || profile?.wallets?.[0];
+
     return (
         <motion.div 
             className="flex flex-col gap-4"
@@ -170,7 +172,7 @@ export const StepAmount = () => {
                     <span className={localType === 'income' ? 'text-[#86CF78]' : 'text-[#FF5C5C]'}>
                         {localType === 'income' ? '+' : '-'}
                     </span>
-                    {DisplayFormat(amountStr)} <span className="text-lg text-gray-300">{profile?.currency}</span>
+                    {DisplayFormat(amountStr)} <span className="text-lg text-gray-300">{activeWallet?.currency || ''}</span>
                 </motion.h1>
             </motion.div>
 

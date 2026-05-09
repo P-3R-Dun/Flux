@@ -83,6 +83,8 @@ export const Dashboard = () => {
         ? `${profile.first_name} ${profile.last_name || ''}`.trim() 
         : profile?.username || '';
 
+    const activeWallet = profile?.wallets?.find((w: any) => w.is_active) || profile?.wallets?.[0];
+
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
@@ -107,7 +109,6 @@ export const Dashboard = () => {
             initial="hidden"
             animate="visible"
         >
-            {/* Header */}
             <motion.div variants={itemVariants} className='flex items-center justify-between p-4 pt-6 shrink-0'>
                 <div className='flex gap-3 items-center'>
                     <motion.button whileHover={{ scale: 1.05 }} onClick={() => {navigate("/settings")}} 
@@ -124,7 +125,6 @@ export const Dashboard = () => {
                     </div>
                 </div>
                 
-                {/* Анимированный бейдж стрика */}
                 <motion.div 
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
@@ -144,9 +144,8 @@ export const Dashboard = () => {
                 </motion.div>
             </motion.div>
 
-            {/* Balance */}
             <motion.div variants={itemVariants} className='flex flex-col items-center gap-2 shrink-0'>
-                <p className='text-lg'>Available Balance ({profile?.currency})</p>
+                <p className='text-lg'>Available Balance ({activeWallet?.currency || 'UAH'})</p> {/* Need to change the currency from wallet*/}
                 <div className='flex gap-2 items-center'>
                     <motion.button 
                         whileHover={{ scale: 1.1 }}
