@@ -15,6 +15,7 @@ import { useAuthStore } from '@/store/useAuthStore.ts'
 import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreate/TransactionCreatePage.tsx'
 import { SettingPage } from '@/pages/dashboard/mobile/SettingPage.tsx'
 import { TemplatesPage } from '@/pages/dashboard/mobile/TemplatesPage'
+import { TransactionsHistoryPage } from "@/pages/history/mobile/TransactionsHistoryPage"
 
 function App() {
   const location = useLocation();
@@ -67,7 +68,7 @@ function App() {
             <Route element={<AuthGuard />}>
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/history" element={<Dashboard />} />
+                <Route path="/history" element={<TransactionsHistoryPage />} />
                 <Route path="/analytics" element={<Dashboard />} />
                 <Route path="/goals" element={<Dashboard />} />
               </Route>

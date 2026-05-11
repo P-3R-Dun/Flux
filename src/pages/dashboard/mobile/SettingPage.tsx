@@ -70,13 +70,13 @@ const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profil
 const AuthModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
     return (
         <div>
-            <p>Damn</p>
+            <p>In development...</p>
         </div>
     )
 }
 
 const PasswordModal = ({onClose, showToast }: {onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
-    const {isLoading, isSuccess, setPassword } = useSetPassword()
+    const { isLoading, isSuccess, setPassword } = useSetPassword()
     const [ currentPassword, setCurrentPassword ] = useState('');
     const [ newPassword, setNewPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
@@ -342,7 +342,7 @@ const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose:
                     }`}
                 >
                     {isLoading ? (
-                        <LoadingSpinner />
+                        <p className="flex items-center justify-center"><LoadingSpinner /></p>
                     ) : (
                         "Send"
                     )}
@@ -505,7 +505,7 @@ export const SettingPage = () => {
         ? `${profile.first_name} ${profile.last_name || ''}`.trim() 
         : profile?.username || '';
 
-    const renderModalContent = (activeModal, profile) => {
+    const renderModalContent = (activeModal: 'profile' | 'password' | '2fa' | 'wallets' | 'feedback' | 'delete' | 'logout' | null, profile: any) => {
         switch (activeModal) {
             case 'profile':
                 return <ProfileModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast} onProfileUpdate={fetchProfile} />;
@@ -518,7 +518,7 @@ export const SettingPage = () => {
             case 'feedback':
                 return <FeedbackModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast}/>;
             case 'delete':
-                return <DeleteModal onClose={() => setActiveModal(null)} profile={profile} />;
+                return <DeleteModal onClose={() => setActiveModal(null)} profile={profile} showToast={showToast} />;
             case 'logout':
                 return <LogoutModal onClose={() => setActiveModal(null)} />;
             default:
@@ -630,7 +630,7 @@ export const SettingPage = () => {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="bg-[#1C1F2C] w-full max-w-sm rounded-3xl p-6 relative z-10"
                         >
-                            {renderModalContent(activeModal, profile, () => setActiveModal(null))}
+                            {renderModalContent(activeModal, profile)}
                         </motion.div>
                     </div>
                 )}
