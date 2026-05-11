@@ -9,7 +9,7 @@ export const TransactionItem = ({
     setExpandedId,
     onEdit,
     onDelete,
-    onClickItem // НОВЫЙ ПРОПС
+    onClickItem
 }: any) => {
     const isExpanded = expandedId === transaction.id;
     
@@ -60,11 +60,9 @@ export const TransactionItem = ({
             e.preventDefault();
             return;
         }
-        // Если передан кастомный обработчик клика (для шаблонов), вызываем его
         if (onClickItem) {
             onClickItem(transaction);
         } else {
-            // Иначе стандартно раскрываем карточку
             setExpandedId(isExpanded ? null : transaction.id);
         }
     };
@@ -79,7 +77,13 @@ export const TransactionItem = ({
     const isZero = numAmount === 0;
 
     return (
-        <div className="relative w-full shrink-0">
+        <motion.div
+            layout 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }} 
+            className="relative w-full shrink-0"
+        >
             <div className="absolute inset-px bg-[#FF5C5C] rounded-3xl flex justify-end items-center px-6">
                 <Trash2 className="w-6 h-6 text-white" />
             </div>
@@ -249,6 +253,6 @@ export const TransactionItem = ({
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </motion.div>
     );
 };

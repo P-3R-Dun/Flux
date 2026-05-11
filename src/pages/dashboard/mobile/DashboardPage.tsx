@@ -204,6 +204,7 @@ export const Dashboard = () => {
                         whileHover={{ scale: 1.05 }} 
                         whileTap={{ scale: 0.95 }} 
                         className='text-sm font-medium text-[#5D73B3]'
+                        onClick={() => {navigate("/history")}}
                     >
                         View All
                     </motion.button>
