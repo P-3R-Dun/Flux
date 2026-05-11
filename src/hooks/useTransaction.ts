@@ -6,15 +6,15 @@ export const usePostTransaction = () => {
     const [error, setError] = useState<any>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const execute = useCallback(async (data: TransactionDT, token: string) => {
+    const execute = useCallback(async (data: TransactionDT) => {
         setIsLoading(true);
         setError(null);
         setIsSuccess(false);
 
         try {
             const result = data.id 
-            ? await dashboardService.updateTransaction(data.id, data, token)
-            : await dashboardService.postTransaction(data, token);
+            ? await dashboardService.updateTransaction(data.id, data)
+            : await dashboardService.postTransaction(data);
             setIsSuccess(true);
             return result;
         } catch (err) {
@@ -34,12 +34,12 @@ export const useDeleteTransaction = () => {
     const [error, setError] = useState<any>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const execute = useCallback(async (transactionId: number, token: string) => {
+    const execute = useCallback(async (transactionId: number) => {
         setIsLoading(true);
         setError(null);
         setIsSuccess(false);
         try {
-            const result = await dashboardService.deleteTransaction(transactionId, token);
+            const result = await dashboardService.deleteTransaction(transactionId);
             setIsSuccess(true);
             return result;
         } catch (err) {
@@ -63,15 +63,12 @@ export const usePostTemplate = () => {
         template_name: string;
         amount: number | string| null;
         category: string | null;
-
-     }, 
-     token: string
-    ) => {
+     }) => {
         setIsLoading(true);
         setError(null);
         setIsSuccess(false);
         try {
-            const result = await dashboardService.postTemplate(data, token);
+            const result = await dashboardService.postTemplate(data);
             setIsSuccess(true);
             return result;
         } catch (err) {

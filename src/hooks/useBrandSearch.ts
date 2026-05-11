@@ -1,7 +1,7 @@
 import { dashboardService, type BrandDT } from '@/services/dashboard.service';
 import { useState, useEffect } from 'react';
 
-export const useBrandSearch = (token: string, query: string) => {
+export const useBrandSearch = (query: string) => {
     const [results, setResults] = useState<BrandDT[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -12,7 +12,7 @@ export const useBrandSearch = (token: string, query: string) => {
         const timer = setTimeout(async () => {
             setIsLoading(true);
             try {
-                const data = await dashboardService.getBrand(token, query);
+                const data = await dashboardService.getBrand(query);
                 setResults(data);
             } catch (error) {
                 setResults([]);
@@ -22,7 +22,7 @@ export const useBrandSearch = (token: string, query: string) => {
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [query, token]);
+    }, [query]);
 
     return { results, isLoading };
 }

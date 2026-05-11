@@ -22,13 +22,6 @@ export const StepDescription = () => {
 
     const handleSubmit = async () => {
         setErrorMessage(null);
-        const currentToken = localStorage.getItem('access') || sessionStorage.getItem('access');
-        
-        if (!currentToken) {
-            setErrorMessage("Authorization error: Please log in again.");
-            return;
-        }
-
         if (isTemplateMode) {
             const hasAnyData = 
                 (amount !== 0 && amount !== null && amount !== undefined) || 
@@ -66,7 +59,7 @@ export const StepDescription = () => {
         };
 
         try {
-            await execute(record, currentToken.trim());
+            await execute(record);
             reset();
             navigate('/');
         } catch (error: any) {
@@ -77,13 +70,6 @@ export const StepDescription = () => {
 
     const handleTemplateSave = async (modalTemplateName: string) => {
         setErrorMessage(null);
-        
-        const currentToken = localStorage.getItem('access') || sessionStorage.getItem('access');
-        if (!currentToken) {
-            setErrorMessage("Authorization error: Please log in again.");
-            return;
-        }
-
         const activeWallet = profile?.wallets?.find(w => w.is_active) || profile?.wallets?.[0];
 
         const templateData = {
@@ -100,9 +86,9 @@ export const StepDescription = () => {
         
         try {
             if (editingId) {
-                await updateTemplate(editingId, templateData, currentToken.trim());
+                await updateTemplate(editingId, templateData);
             } else {
-                await executeTemplate(templateData, currentToken.trim());
+                await executeTemplate(templateData);
             }
             
             setIsModalOpen(false);

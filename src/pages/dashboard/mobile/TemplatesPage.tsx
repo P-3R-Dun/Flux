@@ -10,7 +10,6 @@ import { useTemplates } from "@/hooks/useTemplates";
 
 export const TemplatesPage = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access');
     
     const { setEditData, reset, setField } = useTransactionCreateStore();
     const { templates, isLoading, fetchTemplates, deleteTemplate } = useTemplates();
@@ -19,10 +18,8 @@ export const TemplatesPage = () => {
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (token) {
-            fetchTemplates(token);
-        }
-    }, [token, fetchTemplates]);
+        fetchTemplates();
+    }, [fetchTemplates]);
 
     const filteredTemplates = templates.filter((template) => 
         template.template_name?.toLowerCase().includes(inputValue.toLowerCase())
@@ -150,12 +147,10 @@ export const TemplatesPage = () => {
                                                 navigate("/add-transaction");
                                             }}
                                             onDelete={async () => {
-                                                if (token) {
-                                                    try {
-                                                        await deleteTemplate(template.id, token);
-                                                    } catch (error) {
-                                                        console.error("Failed to delete template", error);
-                                                    }
+                                                try {
+                                                    await deleteTemplate(template.id);
+                                                } catch (error) {
+                                                    console.error("Failed to delete template", error);
                                                 }
                                             }}
                                         />

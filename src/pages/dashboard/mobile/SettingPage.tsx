@@ -13,23 +13,22 @@ import { useWallets } from "@/hooks/useWallets"
 import { useFeedback } from "@/hooks/useFeedback";
 import { LoadingSpinner } from "@/components/ui/shared/LoadingSpinner";
 
-const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void, onProfileUpdate: (token: string) => void }) => {
+const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void, onProfileUpdate: () => void }) => {
     const [firstName, setFirstName] = useState(profile?.first_name || '');
     const [lastName, setLastName] = useState(profile?.last_name || '');
     const { isSuccess, setName } = useSetName();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
 
     useEffect(() => {
         if (isSuccess) {
             showToast("Name successfully updated!", "success");
-            onProfileUpdate(token)
+            onProfileUpdate()
             onClose();
         }
     }, [isSuccess]);
 
     const handleSaveChanges = async () => {
         try {
-            await setName(token, firstName, lastName);
+            await setName(firstName, lastName);
         } catch (err: any) {
             const errorMsg = err?.first_name?.[0] || 
                              err?.last_name?.[0] ||
@@ -80,25 +79,22 @@ const PasswordModal = ({onClose, showToast }: {onClose: () => void, showToast: (
     const [ currentPassword, setCurrentPassword ] = useState('');
     const [ newPassword, setNewPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
     const { fetchProfile } = useDashboardData()
 
     useEffect(() => {
         if (isSuccess) {
-            fetchProfile(token)
+            fetchProfile()
             onClose();
         } 
     }, [isSuccess]);
 
     const handleSubmit = async () => {
-        if (!token) 
-            return;
         if (newPassword !== confirmPassword) {
             showToast("Passwords do not match!", "error");
             return;
         }
         try {
-            await setPassword(token, currentPassword, newPassword);
+            await setPassword(currentPassword, newPassword);
             showToast("Password successfully changed!", "success");
             onClose();
         } catch (err: any) {
@@ -155,7 +151,6 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
 
     const { updateWallet, createWallet, deleteWallet, isLoading } = useWallets();
     const { fetchProfile } = useDashboardData();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
 
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -173,9 +168,9 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
     const onConfirmDelete = async () => {
         if (selectedWallet.is_active) return;
         try {
-            await deleteWallet(selectedWallet.id, token);
+            await deleteWallet(selectedWallet.id);
             showToast("Wallet deleted", "success");
-            fetchProfile(token);
+            fetchProfile();
             setView('list');
         } catch (e) { showToast("Error", "error"); }
     };
@@ -183,7 +178,7 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
     const onSaveEdit = async () => {
         try {
             if (selectedWallet) {
-                await updateWallet(selectedWallet.id, { name, currency }, token);
+                await updateWallet(selectedWallet.id, { name, currency });
                 showToast("Wallet updated!", "success");
             } else {
                 await createWallet({ 
@@ -191,10 +186,10 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
                     currency, 
                     icon_name: 'Wallet', 
                     is_active: false
-                }, token);
+                });
                 showToast("New wallet created!", "success");
             }
-            fetchProfile(token);
+            fetchProfile();
             setView('list');
             setName('');
             setCurrency('UAH');
@@ -215,7 +210,7 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
                                     key={w.id}
                                     onPointerDown={() => handleLongPressStart(w)}
                                     onPointerUp={handleLongPressEnd}
-                                    onClick={() => !w.is_active && updateWallet(w.id, {is_active: true}, token).then(() => {fetchProfile(token); showToast("Wallet was successfully switched!", "success"); onClose();})}
+                                    onClick={() => !w.is_active && updateWallet(w.id, {is_active: true}).then(() => {fetchProfile(); showToast("Wallet was successfully switched!", "success"); onClose();})}
                                     className={`p-4 rounded-2xl flex items-center justify-between border-2 transition-all ${
                                         w.is_active ? 'bg-[#3A4368] border-[#6B79B5]' : 'bg-[#252836] border-transparent'
                                     }`}
@@ -283,7 +278,6 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
 const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
     const [message, setMessage] = useState('');
     const { postFeedback, isLoading } = useFeedback();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
 
     const handleSendFeedback = async () => {
         if (!message.trim()) {
@@ -292,7 +286,7 @@ const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose:
         }
 
         try {
-            await postFeedback(message, token);
+            await postFeedback(message);
             showToast("Feedback sent to Telegram!", "success");
             setMessage('');
             onClose();
@@ -355,7 +349,6 @@ const FeedbackModal = ({ profile, onClose, showToast }: { profile: any, onClose:
 const DeleteModal = ({ profile, onClose, showToast }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void }) => {
     const [confirmName, setConfirmName] = useState('');
     const { executeDelete, isLoading } = useDeleteAccount();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
     const navigate = useNavigate();
 
     const isConfirmed = confirmName === profile?.username;
@@ -364,7 +357,7 @@ const DeleteModal = ({ profile, onClose, showToast }: { profile: any, onClose: (
         if (!isConfirmed) return;
 
         try {
-            await executeDelete(token);
+            await executeDelete();
             showToast("Account deleted. We're sad to see you go.", "success");
             navigate('/');
         } catch (err) {
@@ -484,10 +477,7 @@ export const SettingPage = () => {
     useEffect(() => {
     const handleVisibilityChange = () => {
         if (document.visibilityState === 'visible') {
-            const token = localStorage.getItem('access') || sessionStorage.getItem('access');
-            if (token) {
-                fetchProfile(token);
-            }
+            fetchProfile();
         }
     };
         document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -540,11 +530,10 @@ export const SettingPage = () => {
         if (!file) return;
 
         try {
-            const token = localStorage.getItem('access') || sessionStorage.getItem('access') || '';
-            await setAvatar(token, file);
+            await setAvatar(file);
         
             showToast("Avatar updated successfully!", "success");
-            fetchProfile(token); 
+            fetchProfile(); 
         
         } catch (err) {
             showToast("Error uploading image", "error");

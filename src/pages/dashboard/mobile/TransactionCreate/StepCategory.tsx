@@ -20,9 +20,8 @@ export const StepCategory = () => {
     const { fetchCategories, isLoadingCategories, categories } = useDashboardData();
 
     useEffect(() => {
-        const token = localStorage.getItem('access') || sessionStorage.getItem('access');
         if (categories.length === 0) {
-            fetchCategories(token || '');
+            fetchCategories();
         }
     }, [categories.length, fetchCategories]);
 

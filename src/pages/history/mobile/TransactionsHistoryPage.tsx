@@ -10,8 +10,6 @@ import { useEditTransaction } from "@/hooks/useEditTransaction";
 
 export const TransactionsHistoryPage = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access');
-    
     const { profile, fetchAllDashboardData, isLoadingProfile } = useDashboardData();
     const { execute: deleteTransaction } = useDeleteTransaction();
     const { startEditing } = useEditTransaction();
@@ -26,10 +24,10 @@ export const TransactionsHistoryPage = () => {
     const [dateTo, setDateTo] = useState<string>("");
 
     useEffect(() => {
-        if (token && !profile) {
-            fetchAllDashboardData(token);
+        if (!profile) {
+            fetchAllDashboardData();
         }
-    }, [token, profile, fetchAllDashboardData]);
+    }, [profile, fetchAllDashboardData]);
 
     const transactions = profile?.transactions || [];
 
@@ -254,10 +252,10 @@ export const TransactionsHistoryPage = () => {
                                             navigate("/add-transaction");
                                         }}
                                         onDelete={async () => {
-                                            if (token && transaction.id) {
+                                            if (transaction.id) {
                                                 try {
-                                                    await deleteTransaction(transaction.id, token);
-                                                    await fetchAllDashboardData(token);
+                                                    await deleteTransaction(transaction.id);
+                                                    await fetchAllDashboardData();
                                                 } catch (error) {
                                                     console.error("Failed to delete transaction", error);
                                                 }

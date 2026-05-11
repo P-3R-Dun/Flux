@@ -4,10 +4,10 @@ import { dashboardService } from '@/services/dashboard.service';
 export const useFeedback = () => {
     const [isLoading, setIsLoading] = useState(false);
 
-    const postFeedback = async (message: string, token: string) => {
+    const postFeedback = async (message: string) => {
         setIsLoading(true);
         try {
-            await dashboardService.sendFeedback(message, token);
+            await dashboardService.sendFeedback(message);
             return true;
         } catch (error) {
             throw error;

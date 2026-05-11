@@ -1,3 +1,5 @@
+import { customFetch } from "./customFetch";
+
 const IP = import.meta.env.VITE_SERVER_IP;
 const API_URL = `http://${IP}:8000/api/finance`;
 
@@ -60,229 +62,191 @@ export interface TemplateDT {
 }
 
 export const dashboardService = {
-    async getProfile(token: string): Promise<ProfileDT> {
-        const response = await fetch(`${API_URL}/profile/me/`, {
+    async getProfile(): Promise<ProfileDT> {
+        const response = await customFetch(`${API_URL}/profile/me/`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
         });
         const result = await response.json();
         if (!response.ok) {
-            throw result
-        };
-
+            throw result;
+        }
         return result;
     },
-    async getCategory(token: string): Promise<CategoryDT[]> {
-        const response = await fetch(`${API_URL}/categories/view/`, {
+    async getCategory(): Promise<CategoryDT[]> {
+        const response = await customFetch(`${API_URL}/categories/view/`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
         });
         const result = await response.json();
         if (!response.ok) {
-            throw result
-        };
-
+            throw result;
+        }
         return result;
     },
-    async getBrand(token: string, query: string): Promise<BrandDT[]> {
-        const response = await fetch(`${API_URL}/brands/search/?query=${query}`, {
+    async getBrand(query: string): Promise<BrandDT[]> {
+        const response = await customFetch(`${API_URL}/brands/search/?query=${query}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
         });
         const result = await response.json();
         if (!response.ok) {
-            throw result
-        };
-
+            throw result;
+        }
         return result;
     },
-    async postTransaction(data: TransactionDT, token: string) {
-        const response = await fetch(`${API_URL}/transactions/create/`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
-                body: JSON.stringify(data)
+    async postTransaction(data: TransactionDT) {
+        const response = await customFetch(`${API_URL}/transactions/create/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
-
         const result = await response.json();
         if (!response.ok) {
-            throw result
-        };
-
+            throw result;
+        }
         return result;
     },
-    async updateTransaction(id: number, data: TransactionDT, token: string) {
-        const response = await fetch(`${API_URL}/transactions/${id}/update/`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
-                body: JSON.stringify(data)
+    async updateTransaction(id: number, data: TransactionDT) {
+        const response = await customFetch(`${API_URL}/transactions/${id}/update/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
-
         const result = await response.json();
         if (!response.ok) {
-            throw result
-        };
-
+            throw result;
+        }
         return result;
     },
-
-    async deleteTransaction(id: number, token: string) {
-        const response = await fetch(`${API_URL}/transactions/${id}/delete/`, {
-                method: 'DELETE',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
+    async deleteTransaction(id: number) {
+        const response = await customFetch(`${API_URL}/transactions/${id}/delete/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
         });
-
         if (!response.ok) {
             const result = await response.json();
-            throw result
-        };
-
+            throw result;
+        }
         return true;
     },
-
     async postTemplate(data: Omit<TransactionDT, "id" | "date" | "amount" | "category"> & { 
         template_name: string; 
         amount: number | string | null; 
         category: string | null; 
-    }, token: string) {
-        const response = await fetch(`${API_URL}/templates/create/`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
-                body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const result = await response.json();
-            throw result
-        };
-
-        return true;
-    },
-
-    async getTemplates(token: string): Promise<TemplateDT[]> {
-        const response = await fetch(`${API_URL}/templates/view/`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
-        });
-    
-        const result = await response.json();
-        if (!response.ok) {
-            throw result;
-        }
-        return result;
-    },
-
-    async updateTemplate(id: number, data: Partial<TemplateDT>, token: string) {
-        const response = await fetch(`${API_URL}/templates/${id}/update/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+    }) {
+        const response = await customFetch(`${API_URL}/templates/create/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-
-        const result = await response.json();
-        if (!response.ok) {
-            throw result;
-        }
-
-        return result;
-    },
-
-    async deleteTemplate(id: number, token: string) {
-        const response = await fetch(`${API_URL}/templates/${id}/delete/`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
-        });
-
         if (!response.ok) {
             const result = await response.json();
             throw result;
         }
-
         return true;
     },
-
-    async updateAvatar(token: string, file: File) {
+    async getTemplates(): Promise<TemplateDT[]> {
+        const response = await customFetch(`${API_URL}/templates/view/`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+        return result;
+    },
+    async updateTemplate(id: number, data: Partial<TemplateDT>) {
+        const response = await customFetch(`${API_URL}/templates/${id}/update/`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            throw result;
+        }
+        return result;
+    },
+    async deleteTemplate(id: number) {
+        const response = await customFetch(`${API_URL}/templates/${id}/delete/`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        if (!response.ok) {
+            const result = await response.json();
+            throw result;
+        }
+        return true;
+    },
+    async updateAvatar(file: File) {
         const formData = new FormData();
         formData.append('profile_picture', file); 
-
-        const response = await fetch(`${API_URL}/profile/me/`, {
+        const response = await customFetch(`${API_URL}/profile/me/`, {
             method: 'PATCH',
-            headers: {'Authorization': `Bearer ${token.trim()}`},
             body: formData,
         });
-
         if (!response.ok) throw await response.json();
         return true;
     },
-
-    async createWallet(data: { name: string, currency: string, icon_name: string }, token: string) {
-        const response = await fetch(`${API_URL}/wallets/create/`, {
+    async createWallet(data: { name: string, currency: string, icon_name: string }) {
+        const response = await customFetch(`${API_URL}/wallets/create/`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
         if (!response.ok) throw await response.json();
         return await response.json();
     },
-
-    async updateWallet(id: number, data: Partial<WalletDT>, token: string) {
-        const response = await fetch(`${API_URL}/wallets/${id}/update/`, {
+    async updateWallet(id: number, data: Partial<WalletDT>) {
+        const response = await customFetch(`${API_URL}/wallets/${id}/update/`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
         if (!response.ok) throw await response.json();
         return await response.json();
     },
-
-    async deleteWallet(id: number, token: string) {
-        const response = await fetch(`${API_URL}/wallets/${id}/delete/`, {
+    async deleteWallet(id: number) {
+        const response = await customFetch(`${API_URL}/wallets/${id}/delete/`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
         });
-
         if (!response.ok) {
             const result = await response.json();
             throw result;
         }
-
         return true;
     },
-
-    async getWallets(token: string): Promise<WalletDT[]> {
-        const response = await fetch(`${API_URL}/wallets/view/`, {
+    async getWallets(): Promise<WalletDT[]> {
+        const response = await customFetch(`${API_URL}/wallets/view/`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}` },
+            headers: { 'Content-Type': 'application/json' },
         });
-
         const result = await response.json();
         if (!response.ok) {
             throw result;
         }
         return result;
     },
-
-    async sendFeedback(message: string, token: string) {
-        const response = await fetch(`${API_URL}/feedback/`, {
+    async sendFeedback(message: string) {
+        const response = await customFetch(`${API_URL}/feedback/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token.trim()}`},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message })
         });
-
         if (!response.ok) {
             const errorData = await response.json();
             throw errorData;
         }
-
         return await response.json();
     },
-
-    async deleteAccount(token: string) {
-        const response = await fetch(`${API_URL}/profile/delete/`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token.trim()}` }
+    async deleteAccount() {
+        const response = await customFetch(`${API_URL}/profile/delete/`, {
+            method: 'DELETE'
         });
         if (!response.ok) throw await response.json();
-        
         return true;
     }
-}
+};

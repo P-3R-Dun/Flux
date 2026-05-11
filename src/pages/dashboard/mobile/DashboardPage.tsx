@@ -63,7 +63,6 @@ const AnimatedStreak = ({ streak }: { streak: number }) => {
 };
 
 export const Dashboard = () => {
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access');
     const { startEditing } = useEditTransaction();
     const { execute } = useDeleteTransaction();
     const { isAuthChecking } = useAuthStore();
@@ -71,8 +70,8 @@ export const Dashboard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthChecking && token) {
-            fetchAllDashboardData(token);
+        if (!isAuthChecking) {
+            fetchAllDashboardData();
         }
     }, [isAuthChecking, fetchAllDashboardData]);
 
@@ -228,8 +227,8 @@ export const Dashboard = () => {
                                         navigate("/add-transaction");
                                     }}
                                     onDelete={async () => {
-                                        await execute(transaction.id, token || '');
-                                        await fetchAllDashboardData(token || '');
+                                        await execute(transaction.id);
+                                        await fetchAllDashboardData();
                                     }}
                                 />
                             ))
