@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router';
 import { Avatar } from '@/components/ui/shared/Avatar';
 import { Eye, EyeOff, Plus, Folder, Rocket, Zap } from 'lucide-react';
 import { motion, animate, AnimatePresence, type Variants } from 'framer-motion';
-import { useAuthStore } from '@/store/useAuthStore';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { LoadingPage } from '@/pages/Loading_page';
 import { TransactionItem } from '@/components/ui/mobile/TransactionItem';
@@ -65,15 +64,12 @@ const AnimatedStreak = ({ streak }: { streak: number }) => {
 export const Dashboard = () => {
     const { startEditing } = useEditTransaction();
     const { execute } = useDeleteTransaction();
-    const { isAuthChecking } = useAuthStore();
     const { profile, isLoadingProfile, balance, fetchAllDashboardData } = useDashboardData();
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!isAuthChecking) {
-            fetchAllDashboardData();
-        }
-    }, [isAuthChecking, fetchAllDashboardData]);
+        fetchAllDashboardData();
+    }, [fetchAllDashboardData]);
 
     const [showBalance, setShowBalance] = useState(true);
     const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -97,7 +93,7 @@ export const Dashboard = () => {
         visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
     };
 
-    if (isAuthChecking || (isLoadingProfile && !profile)) {
+    if (isLoadingProfile && !profile) {
         return <LoadingPage />;
     }
 

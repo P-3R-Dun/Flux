@@ -16,7 +16,7 @@ import { LoadingSpinner } from "@/components/ui/shared/LoadingSpinner";
 const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profile: any, onClose: () => void, showToast: (message: string, type: 'success' | 'error') => void, onProfileUpdate: () => void }) => {
     const [firstName, setFirstName] = useState(profile?.first_name || '');
     const [lastName, setLastName] = useState(profile?.last_name || '');
-    const { isSuccess, setName } = useSetName();
+    const { isLoading, isSuccess, setName } = useSetName();
 
     useEffect(() => {
         if (isSuccess) {
@@ -57,10 +57,10 @@ const ProfileModal = ({ profile, onClose, showToast, onProfileUpdate }: { profil
             <motion.button 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-button-gradient text-white p-4 rounded-xl mt-2"
+                className="w-full bg-button-gradient text-white p-4 rounded-xl mt-2 "
                 onClick={handleSaveChanges}
             >
-                Save Changes
+                <p className="flex items-center justify-center">{isLoading ? <LoadingSpinner /> : "Save Changes"}</p>
             </motion.button>
         </div>
     )
@@ -133,10 +133,10 @@ const PasswordModal = ({onClose, showToast }: {onClose: () => void, showToast: (
             <motion.button 
                 whileHover={{ scale: 1.02 }} 
                 whileTap={{ scale: 0.98 }}
-                className="w-full bg-button-gradient text-white p-4 rounded-xl mt-2"
+                className="w-full bg-button-gradient text-white p-4 rounded-xl mt-2 items-center justify-center"
                 onClick={handleSubmit}
             >
-                Change Password
+                <p className="flex items-center justify-center">{isLoading ? <LoadingSpinner /> : "Change Password"}</p>
             </motion.button>
         </div>
     )
@@ -149,7 +149,7 @@ const WalletsModal = ({ profile, onClose, showToast }: any) => {
     const [name, setName] = useState('');
     const [currency, setCurrency] = useState('UAH');
 
-    const { updateWallet, createWallet, deleteWallet, isLoading } = useWallets();
+    const { updateWallet, createWallet, deleteWallet } = useWallets();
     const { fetchProfile } = useDashboardData();
 
     const pressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

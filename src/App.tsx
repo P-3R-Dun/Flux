@@ -11,7 +11,6 @@ import { Dashboard } from '@/pages/dashboard/mobile/DashboardPage.tsx'
 import { LoadingPage } from '@/pages/Loading_page.tsx'
 import { ActivateAccount } from '@/pages/auth/ActivateAccount.tsx'
 import { AppLayout } from '@/components/layout/mobile/AppLayout.tsx'
-import { useAuthStore } from '@/store/useAuthStore.ts'
 import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreate/TransactionCreatePage.tsx'
 import { SettingPage } from '@/pages/dashboard/mobile/SettingPage.tsx'
 import { TemplatesPage } from '@/pages/dashboard/mobile/TemplatesPage'
@@ -19,13 +18,8 @@ import { TransactionsHistoryPage } from "@/pages/history/mobile/TransactionsHist
 
 function App() {
   const location = useLocation();
-  const { checkAuth, isAuthChecking } = useAuthStore();
   const [isTimerLoading, setIsTimerLoading] = useState(true);
   const prevPath = useRef(location.pathname);
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
 
   useEffect(() => {
     if (location.pathname !== prevPath.current) {
@@ -40,7 +34,7 @@ function App() {
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
-  const isAppLoading = isTimerLoading || isAuthChecking;
+  const isAppLoading = isTimerLoading;
 
   return (
     <div className="min-h-dvh relative">      

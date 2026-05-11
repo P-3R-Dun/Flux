@@ -2,16 +2,20 @@ import { create } from 'zustand'
 
 interface AuthState {
     isAuthenticated: boolean;
-    isAuthChecking: boolean;
     user: any;
     login: () => void;
     logout: () => void;
-    checkAuth: () => void;
 }
 
+const hasToken = !!(
+    localStorage.getItem('access') || 
+    sessionStorage.getItem('access') || 
+    localStorage.getItem('refresh') || 
+    sessionStorage.getItem('refresh')
+);
+
 export const useAuthStore = create<AuthState>((set) => ({
-    isAuthenticated: false,
-    isAuthChecking: true,
+    isAuthenticated: hasToken,
     user: null,
     
     login: () => {
@@ -23,16 +27,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem('refresh');
         sessionStorage.removeItem('access');
         sessionStorage.removeItem('refresh');
-        set({ isAuthenticated: false, user: null, isAuthChecking: false });
-    },
-    
-    checkAuth: () => {
-        const hasAccess = !!(localStorage.getItem('access') || sessionStorage.getItem('access'));
-        const hasRefresh = !!(localStorage.getItem('refresh') || sessionStorage.getItem('refresh'));
-
-        if (hasAccess || hasRefresh) {
-            set({ isAuthenticated: true, isAuthChecking: false });
-            set({ isAuthenticated: false, isAuthChecking: false, user: null });
-        }
-    },
+        set({ isAuthenticated: false, user: null });
+    }
 }))
