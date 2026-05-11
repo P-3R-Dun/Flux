@@ -10,7 +10,6 @@ import { useDashboardStore } from '@/store/useDashboardStore';
 
 export const StepDescription = () => {
     const navigate = useNavigate();
-    // Убираем получение токена отсюда, чтобы избежать "старого" состояния React
     
     const { editingId, amount, name, description, category_id, date, brand_logo_url, isTemplateMode, reset, setField } = useTransactionCreateStore();
     const { execute, isLoading } = usePostTransaction();
@@ -23,8 +22,6 @@ export const StepDescription = () => {
 
     const handleSubmit = async () => {
         setErrorMessage(null);
-
-        // 1. Берем самый свежий токен прямо в момент клика (как в консоли)
         const currentToken = localStorage.getItem('access') || sessionStorage.getItem('access');
         
         if (!currentToken) {
@@ -47,8 +44,7 @@ export const StepDescription = () => {
             setIsModalOpen(true);
             return;
         }
-        
-        // 2. Строго находим активный счет
+    
         const activeWallet = profile?.wallets?.find(w => w.is_active) || profile?.wallets?.[0];
         
         if (!activeWallet) {
@@ -66,11 +62,10 @@ export const StepDescription = () => {
             brand_logo_url: brand_logo_url || null,
             goal: null,
             category_name: null,
-            wallet: activeWallet.id, // Гарантированно передаем ID
+            wallet: activeWallet.id,
         };
 
         try {
-            // Передаем свежий токен
             await execute(record, currentToken.trim());
             reset();
             navigate('/');

@@ -22,6 +22,8 @@ export const TransactionsHistoryPage = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [sortBy, setSortBy] = useState<"date_desc" | "date_asc" | "amount_desc" | "amount_asc">("date_desc");
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
 
     useEffect(() => {
         if (token && !profile) {
@@ -53,6 +55,19 @@ export const TransactionsHistoryPage = () => {
             result = result.filter(t => t.category_name === selectedCategory);
         }
 
+        if (selectedCategory !== "all") {
+            result = result.filter(t => t.category_name === selectedCategory);
+        }
+
+        if (dateFrom) {
+            const fromTime = new Date(dateFrom).getTime();
+            result = result.filter(t => new Date(t.date).getTime() >= fromTime);
+        }
+        if (dateTo) {
+            const toTime = new Date(dateTo).setHours(23, 59, 59, 999);
+            result = result.filter(t => new Date(t.date).getTime() <= toTime);
+        }
+
         result.sort((a, b) => {
             const dateA = new Date(a.date).getTime();
             const dateB = new Date(b.date).getTime();
@@ -69,9 +84,8 @@ export const TransactionsHistoryPage = () => {
         });
 
         return result;
-    }, [transactions, searchQuery, selectedCategory, sortBy]);
+    }, [transactions, searchQuery, selectedCategory, sortBy, dateFrom, dateTo]);
 
-    // Анимации
     const containerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -98,7 +112,7 @@ export const TransactionsHistoryPage = () => {
         >
             <motion.div variants={itemVariants} className='flex items-center justify-between p-4 pt-6 shrink-0 relative'>
                 <motion.button 
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/")}
                     whileHover={{ scale: 1.15 }} 
                     whileTap={{ scale: 0.95 }} 
                     className="bg-[#252836] rounded-2xl p-2 w-12 h-12 z-10"
@@ -166,6 +180,24 @@ export const TransactionsHistoryPage = () => {
                                         <DollarSign className="w-4 h-4" />
                                         Amount {sortBy === "amount_desc" ? '↓' : sortBy === "amount_asc" ? '↑' : ''}
                                     </button>
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-500 uppercase font-bold mb-3 tracking-wider">Period</p>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="date" 
+                                        value={dateFrom}
+                                        onChange={(e) => setDateFrom(e.target.value)}
+                                        className="flex-1 bg-[#252836] text-white p-2.5 rounded-xl text-sm outline-none border border-transparent focus:border-[#5D73B3]/50 transition-colors cursor-pointer"
+                                    />
+                                    <span className="text-gray-500 flex items-center">-</span>
+                                    <input 
+                                        type="date" 
+                                        value={dateTo}
+                                        onChange={(e) => setDateTo(e.target.value)}
+                                        className="flex-1 bg-[#252836] text-white p-2.5 rounded-xl text-sm outline-none border border-transparent focus:border-[#5D73B3]/50 transition-colors cursor-pointer"
+                                    />
                                 </div>
                             </div>
 

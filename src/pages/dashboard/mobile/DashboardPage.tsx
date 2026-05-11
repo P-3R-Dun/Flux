@@ -145,7 +145,7 @@ export const Dashboard = () => {
             </motion.div>
 
             <motion.div variants={itemVariants} className='flex flex-col items-center gap-2 shrink-0'>
-                <p className='text-lg'>Available Balance ({activeWallet?.currency || 'UAH'})</p> {/* Need to change the currency from wallet*/}
+                <p className='text-lg'>Available Balance ({activeWallet?.currency || 'UAH'})</p>
                 <div className='flex gap-2 items-center'>
                     <motion.button 
                         whileHover={{ scale: 1.1 }}
@@ -175,7 +175,6 @@ export const Dashboard = () => {
                 </div>
             </motion.div>
 
-            {/* Action Buttons */}
             <motion.div variants={itemVariants} className='flex items-center justify-center gap-10 select-none shrink-0'>
                 <motion.button whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }} onClick={() => navigate("/add-transaction")} className='flex flex-col items-center gap-2 cursor-pointer'>
                     <div className='w-16 h-16 rounded-3xl bg-[#252836] flex items-center justify-center'><Plus className='w-6 h-6'/></div>
@@ -191,7 +190,6 @@ export const Dashboard = () => {
                 </motion.button>
             </motion.div>
 
-            {/* Recent Activity */}
             <motion.div 
                 variants={itemVariants} 
                 className='flex-1 min-h-0 bg-[#181D27] rounded-t-4xl shadow-2xl flex flex-col overflow-hidden'

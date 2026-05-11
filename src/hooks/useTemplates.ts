@@ -40,7 +40,6 @@ export const useTemplates = () => {
         setError(null);
         try {
             await dashboardService.deleteTemplate(id, token);
-            // Мгновенно убираем удаленный шаблон из списка
             setTemplates(prev => prev.filter(t => t.id !== id));
             return true;
         } catch (err) {

@@ -134,7 +134,7 @@ export const TemplatesPage = () => {
                                             transaction={mappedTemplate} 
                                             expandedId={expandedId} 
                                             setExpandedId={setExpandedId} 
-                                            onClickItem={() => handleUseTemplate(template)} // Передаем логику клика напрямую в айтем
+                                            onClickItem={() => handleUseTemplate(template)}
                                             onEdit={() => {
                                                 setEditData({
                                                     editingId: template.id,
@@ -152,7 +152,6 @@ export const TemplatesPage = () => {
                                             onDelete={async () => {
                                                 if (token) {
                                                     try {
-                                                        // Вызываем чисто, без всяких e.stopPropagation()
                                                         await deleteTemplate(template.id, token);
                                                     } catch (error) {
                                                         console.error("Failed to delete template", error);
