@@ -1,5 +1,5 @@
 const IP = import.meta.env.VITE_SERVER_IP;
-const BASE_URL = `http://${IP}:8000/api`;
+const BASE_URL = `${IP}/api`;
 
 export const customFetch = async (url: string, options: RequestInit = {}) => {
     let accessToken = localStorage.getItem('access') || sessionStorage.getItem('access');

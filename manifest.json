@@ -1,0 +1,28 @@
+{
+  "name": "Flux Personal Finance",
+  "short_name": "Flux",
+  "description": "Застосунок для управління особистими фінансами та аналітикою",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f111a",
+  "theme_color": "#0f111a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple-touch-icon"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
