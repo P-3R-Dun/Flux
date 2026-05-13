@@ -1,7 +1,7 @@
 import { customFetch } from "./customFetch";
 
 const IP = import.meta.env.VITE_SERVER_IP;
-const API_URL = `${IP}/api/auth`;
+const API_URL = `http://${IP}:8000/api/auth`;
 
 interface LoginDT { username: string; password: string; }
 interface RegisterDT { email: string; username: string; password: string; }

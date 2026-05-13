@@ -226,7 +226,7 @@ export const TransactionsHistoryPage = () => {
                 variants={itemVariants} 
                 className='flex-1 min-h-0 bg-[#181D27] rounded-t-4xl shadow-2xl flex flex-col overflow-hidden'
             >
-                <div className='px-6 pt-6 pb-10 overflow-y-auto flex-1 scrollbar-hide'>
+                <div className='px-6 pt-6 pb-36 overflow-y-auto flex-1 scrollbar-hide'>
                     <div className='flex flex-col gap-4'>
                         <AnimatePresence mode="popLayout">
                             {processedTransactions.length === 0 ? (
