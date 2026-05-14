@@ -1,7 +1,8 @@
 import { customFetch } from "./customFetch";
 
-const IP = import.meta.env.VITE_SERVER_IP;
-const API_URL = `http://${IP}:8000/api/finance`;
+// const IP = import.meta.env.VITE_SERVER_IP;
+// const API_URL = `http://${IP}:8000/api/finance`; This use for starting dev server
+const API_URL = `/api/finance` // This use for ngrok deploy server
 
 export interface CategoryDT {
     id: string; 
