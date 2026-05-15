@@ -201,7 +201,7 @@ export const AnalyticsPage = () => {
         >
             <motion.div variants={itemVariants} className="flex items-center justify-between p-4 pt-6 shrink-0 relative">
                 <motion.button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/")}
                     whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.95 }}
                     className="bg-[#252836] rounded-2xl p-2 w-12 h-12 z-10 flex items-center justify-center"
