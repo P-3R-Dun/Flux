@@ -12,9 +12,8 @@ export const StepAmount = () => {
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('access') || sessionStorage.getItem('access');
-        if (categories.length === 0 && token) {
-            fetchCategories(token);
+        if (categories.length === 0) {
+            fetchCategories();
         }
     }, [categories.length, fetchCategories]);
 

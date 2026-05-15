@@ -1,5 +1,7 @@
+import { customFetch } from "./customFetch";
+
 const IP = import.meta.env.VITE_SERVER_IP;
-const API_URL = `http://${IP}:8000/api/auth`;
+const API_URL = `${IP}/api/auth`;
 
 interface LoginDT { username: string; password: string; }
 interface RegisterDT { email: string; username: string; password: string; }
@@ -85,23 +87,11 @@ export const authService = {
         const result = await response.json().catch(() => ({ error: 'No info' }));
         throw result;
     },
-    
-    async verifyToken(token: string) {
-        const response = await fetch(`${API_URL}/jwt/verify/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
-        });
 
-        if (response.ok) { return true };
-        const result = await response.json();
-        throw result;
-    },
-
-    async setPassword(token: string, current_password: string, new_password: string) {
-        const response = await fetch(`${API_URL}/users/set_password/`, {
+    async setPassword(current_password: string, new_password: string) {
+        const response = await customFetch(`${API_URL}/users/set_password/`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({current_password, new_password}),
         });
 
@@ -110,10 +100,10 @@ export const authService = {
         throw result;
     },
 
-    async setName (token: string, first_name: string, last_name: string) {
-        const response = await fetch(`${API_URL}/users/me/`, {
+    async setName (first_name: string, last_name: string) {
+        const response = await customFetch(`${API_URL}/users/me/`, {
             method: 'PATCH',
-            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({first_name, last_name}),
         });
 

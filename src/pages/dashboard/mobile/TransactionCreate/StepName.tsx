@@ -4,10 +4,9 @@ import { useBrandSearch } from '@/hooks/useBrandSearch';
 import { LoadingSpinner } from '@/components/ui/shared/LoadingSpinner';
 import { Search } from 'lucide-react';
 
-export const StepName = () => {
-    const token = localStorage.getItem('access') || sessionStorage.getItem('access');   
+export const StepName = () => { 
     const { name, brand_logo_url, isTemplateMode, setField, nextStep } = useTransactionCreateStore(); 
-    const { results, isLoading } = useBrandSearch(token || '', name);
+    const { results, isLoading } = useBrandSearch(name);
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },

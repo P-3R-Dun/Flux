@@ -166,11 +166,11 @@ export const useSetPassword = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const setPassword = async (token: string, current_password: string, new_password: string) => {
+    const setPassword = async (current_password: string, new_password: string) => {
         setIsLoading(true);
         setError(null);
         try {
-            await authService.setPassword(token, current_password, new_password);
+            await authService.setPassword(current_password, new_password);
             setIsSuccess(true);
         } catch (error: any) {
             const msg = extractErrorMessage(error, "Failed to change password");

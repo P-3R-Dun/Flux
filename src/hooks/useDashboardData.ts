@@ -11,11 +11,11 @@ export const useDashboardData = () => {
     const [profileError, setProfileError] = useState<any | null>(null);
     const [categoriesError, setCategoriesError] = useState<any | null>(null);
 
-    const fetchProfile = useCallback(async (token: string) => {
+    const fetchProfile = useCallback(async () => {
         setIsLoadingProfile(true);
         setProfileError(null);
         try {
-            const data = await dashboardService.getProfile(token);
+            const data = await dashboardService.getProfile();
             setProfile(data);
         } catch (error) {
             setProfileError(error);
@@ -24,11 +24,11 @@ export const useDashboardData = () => {
         }
     }, [setProfile]);
 
-    const fetchCategories = useCallback(async (token: string) => {
+    const fetchCategories = useCallback(async () => {
         setIsLoadingCategories(true);
         setCategoriesError(null);
         try {
-            const data = await dashboardService.getCategory(token);
+            const data = await dashboardService.getCategory();
             setCategories(data);
         } catch (error) {
             setCategoriesError(error);
@@ -37,7 +37,7 @@ export const useDashboardData = () => {
         }
     }, [setCategories]);
 
-    const fetchAllDashboardData = useCallback(async (token: string) => {
+    const fetchAllDashboardData = useCallback(async () => {
         setIsLoadingProfile(true);
         setIsLoadingCategories(true);
         setProfileError(null);
@@ -45,8 +45,8 @@ export const useDashboardData = () => {
         
         try {
             const [profileData, categoriesData] = await Promise.all([
-                dashboardService.getProfile(token),
-                dashboardService.getCategory(token)
+                dashboardService.getProfile(),
+                dashboardService.getCategory()
             ]);
             setProfile(profileData);
             setCategories(categoriesData);

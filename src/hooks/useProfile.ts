@@ -9,11 +9,11 @@ export const useSetName = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const setName = async (token: string, first_name: string, last_name: string) => {
+    const setName = async (first_name: string, last_name: string) => {
         setIsLoading(true);
         setError(null);
         try {
-            await authService.setName(token, first_name, last_name);
+            await authService.setName(first_name, last_name);
             setIsSuccess(true);
         } catch (error: any) {
             const msg = extractErrorMessage(error, "Failed to change name");
@@ -32,13 +32,13 @@ export const useSetAvatar = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const setAvatar = async (token: string, file: File) => {
+    const setAvatar = async (file: File) => {
         setIsLoading(true);
         setError(null);
         setIsSuccess(false);
 
         try {
-            await dashboardService.updateAvatar(token, file);
+            await dashboardService.updateAvatar(file);
             setIsSuccess(true);
         } catch (err: any) {
             const msg = err?.detail || "Failed to upload avatar";
@@ -56,10 +56,10 @@ export const useDeleteAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
     const logout = useAuthStore(state => state.logout);
 
-    const executeDelete = async (token: string) => {
+    const executeDelete = async () => {
         setIsLoading(true);
         try {
-            await dashboardService.deleteAccount(token);
+            await dashboardService.deleteAccount();
             logout();
             return true;
         } finally {

@@ -7,11 +7,11 @@ export const useTemplates = () => {
     const [isMutating, setIsMutating] = useState(false); 
     const [error, setError] = useState<any | null>(null);
 
-    const fetchTemplates = useCallback(async (token: string) => {
+    const fetchTemplates = useCallback(async () => {
         setIsLoading(true);
         setError(null);
         try {
-            const data = await dashboardService.getTemplates(token);
+            const data = await dashboardService.getTemplates();
             setTemplates(data);
         } catch (err) {
             setError(err);
@@ -20,11 +20,11 @@ export const useTemplates = () => {
         }
     }, []);
 
-    const updateTemplate = useCallback(async (id: number, data: Partial<TemplateDT>, token: string) => {
+    const updateTemplate = useCallback(async (id: number, data: Partial<TemplateDT>) => {
         setIsMutating(true);
         setError(null);
         try {
-            const updatedTemplate = await dashboardService.updateTemplate(id, data, token);
+            const updatedTemplate = await dashboardService.updateTemplate(id, data);
             setTemplates(prev => prev.map(t => t.id === id ? { ...t, ...updatedTemplate } : t));
             return updatedTemplate;
         } catch (err) {
@@ -35,12 +35,11 @@ export const useTemplates = () => {
         }
     }, []);
 
-    const deleteTemplate = useCallback(async (id: number, token: string) => {
+    const deleteTemplate = useCallback(async (id: number) => {
         setIsMutating(true);
         setError(null);
         try {
-            await dashboardService.deleteTemplate(id, token);
-            // Мгновенно убираем удаленный шаблон из списка
+            await dashboardService.deleteTemplate(id);
             setTemplates(prev => prev.filter(t => t.id !== id));
             return true;
         } catch (err) {
