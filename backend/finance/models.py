@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -60,31 +59,10 @@ class Category(models.Model):
             models.UniqueConstraint(fields=['user', 'name', 'type'], name='unique_category_per_user_and_type')
         ]
 
-class Goal(models.Model):
-    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='goals')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals')
-    title = models.CharField(max_length=30)
-    target_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    deadline = models.DateTimeField(null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'title'], name='unique_goal_title_per_user')
-        ]
-
-    @property
-    def current_amount(self):
-        total = self.transactions.aggregate(total=Sum('amount'))['total']
-        return total if total is not None else 0
-
 class Transaction(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='transactions')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='transactions')
-    goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(default=timezone.now)
     name = models.CharField(max_length=100)
@@ -106,7 +84,6 @@ class Templates(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='transactions_templates')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions_templates')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='transactions_templates')
-    goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions_templates')
     amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     name = models.CharField(max_length=100)
     template_name = models.CharField(max_length=100)

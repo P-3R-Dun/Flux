@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { NavLink } from "react-router";
-import { House, Goal, ChartLine, History, type LucideIcon } from 'lucide-react';
+import { House, ChartLine, History, type LucideIcon } from 'lucide-react';
 
 interface MobileNavigationProps {
     path: string;
@@ -12,7 +12,6 @@ const navItems: MobileNavigationProps[] = [
     { path: "/dashboard", title: "Home", icon: House },
     { path: "/history", title: "History", icon: History },
     { path: "/analytics", title: "Analytics", icon: ChartLine },
-    { path: "/goals", title: "Goals", icon: Goal },
 ]
 
 export const MobileNavigation = () => {

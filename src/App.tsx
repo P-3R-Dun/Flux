@@ -65,7 +65,6 @@ function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/history" element={<TransactionsHistoryPage />} />
                 <Route path="/analytics" element={<AnalyticsPage />} />
-                <Route path="/goals" element={<Dashboard />} />
               </Route>
               <Route path="/add-transaction" element={<TransactionCreatePage />} />
               <Route path="/templates" element={<TemplatesPage />} />
