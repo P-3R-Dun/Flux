@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load custom .env configuration settings
 load_dotenv(dotenv_path=f"{BASE_DIR}/../.env")
 
-IP_ADRESS = os.getenv("VITE_SERVER_IP")
+IP_ADDRESS = os.getenv("VITE_SERVER_IP")
 ENV_DATABASE_HOST = os.getenv("DATABASE_HOST")
 ENV_DATABASE_NAME = os.getenv("DATABASE_NAME")
 ENV_DATABASE_USER = os.getenv("DATABASE_USER")
@@ -31,9 +31,10 @@ ENV_DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 ENV_EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 ENV_EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 ENV_DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+ENV_SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3w0r)2_r&dn+ke03a6qb4*9^lx@+h1g302_4h+$4h2gaioqgnr'
+SECRET_KEY = ENV_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -64,8 +65,9 @@ AUTHENTICATION_BACKENDS = [
 DJOSER = {
     'LOGIN_FIELD': 'username',
     'SERIALIZERS': {
+        'current_user': 'accounts.serializers.CustomUserSerializer',
+        'user': 'accounts.serializers.CustomUserSerializer',
         'user_create': 'djoser.serializers.UserCreateSerializer',
-        'user': 'djoser.serializers.UserSerializer',
     },
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
@@ -73,7 +75,7 @@ DJOSER = {
         'password_reset': 'accounts.email.PasswordResetEmail',
         'activation': 'accounts.email.ActivationEmail',
     },
-    'DOMAIN': f'{IP_ADRESS}:5173',
+    'DOMAIN': f'{IP_ADDRESS}:5173',
     'SITE_NAME': 'Flux App',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
     'SEND_ACTIVATION_EMAIL': True,
@@ -84,6 +86,7 @@ DJOSER = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=31),
+    'UPDATE_LAST_LOGIN': True
 }
 
 # Application definition
@@ -195,3 +198,11 @@ DEFAULT_FROM_EMAIL = ENV_DEFAULT_FROM_EMAIL
 # Media Settings (Profile Pictures)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# LOGO.DEV API Settings
+LOGO_DEV_API_KEY = os.getenv('LOGO_DEV_API_KEY')
+LOGO_DEV_PUBLIC_KEY = os.getenv('LOGO_DEV_PUBLIC_KEY')
+
+# Telegram Settings (for Feedback)
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_USER_ID = os.getenv('TELEGRAM_USER_ID')

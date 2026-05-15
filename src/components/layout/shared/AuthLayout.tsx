@@ -2,15 +2,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Intro } from '../../../pages/auth/Intro'
-import { useSound } from '../../../hooks/useSound'
 import FluxLogo from './../../../assets/icons/brand/flux-logo.svg'
 
 export const AuthLayout = () => {
-    const { play } = useSound();
     const [isIntroCompleted, setIsIntroCompleted] = useState(() => localStorage.getItem('IntroCompleted') === 'true');
     const testingButton = () => {
         localStorage.setItem('IntroCompleted', 'false');
-        play('BUTTON_SOUND')
         setIsIntroCompleted(false);
     }
 

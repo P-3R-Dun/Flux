@@ -1,34 +1,18 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { Link, useParams } from 'react-router'
-import { useState, useEffect } from 'react'
-import { useSound } from '../../hooks/useSound'
+import { useState } from 'react'
 import { useReset } from '../../hooks/useAuth'
 import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 
 export const ResetPass = () => {
-    const { play } = useSound();
     const [new_password, setNewPassword] = useState('')
     const [re_new_password, setReNewPassword] = useState('')
     const { uid, token } = useParams();
-
     const {isLoading, error, isSuccess, resetPassword } = useReset()
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         resetPassword(new_password, re_new_password, uid || '', token || '');
     } 
-
-    useEffect(() => {
-        if (error) {
-            play('ERROR_SOUND')
-        }
-    },[error])
-
-    useEffect(() => {
-        if (isSuccess) {
-            play('SUCCESS_SOUND')
-        }
-    },[isSuccess])
 
     if (isSuccess) {
         return (
@@ -41,7 +25,7 @@ export const ResetPass = () => {
                     <h1 className='font-semibold text-3xl text-green-400'>Password changed!</h1>
                     <p>Now you can try log in again!</p>
                 </div>
-                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' onClick={() => play('BUTTON_SOUND')} className='p-3 px-10 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold'>
+                <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' className='p-3 px-10 w-full bg-button-gradient shadow-[0_0_40px_rgba(99,121,184,0.3)] rounded-xl font-semibold'>
                     Back to Login
                 </Link></motion.button>
             </motion.div>
@@ -82,12 +66,11 @@ export const ResetPass = () => {
                 whileHover={{ scale: 1.05 }} 
                 whileTap={{ scale: 0.95 }} 
                 type='submit'
-                onClick={() => play('BUTTON_SOUND')}
                 disabled={isLoading}
                 className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
                 {isLoading ? <LoadingSpinner /> : "Restore"}
             </motion.button>
-            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link onClick={() => play('BUTTON_SOUND')} to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
+            <motion.button whileHover={{scale: 1.20}} whileTap={{scale: 0.95}}><Link to='/login' className='text-(--auth-main-color) select-none cursor-pointer'>
                 Back to Login
             </Link></motion.button>
         </motion.form>

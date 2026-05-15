@@ -84,5 +84,41 @@ export const authService = {
         if (response.ok) { return true };
         const result = await response.json().catch(() => ({ error: 'No info' }));
         throw result;
+    },
+    
+    async verifyToken(token: string) {
+        const response = await fetch(`${API_URL}/jwt/verify/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token }),
+        });
+
+        if (response.ok) { return true };
+        const result = await response.json();
+        throw result;
+    },
+
+    async setPassword(token: string, current_password: string, new_password: string) {
+        const response = await fetch(`${API_URL}/users/set_password/`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            body: JSON.stringify({current_password, new_password}),
+        });
+
+        if (response.ok) { return true }
+        const result = await response.json();
+        throw result;
+    },
+
+    async setName (token: string, first_name: string, last_name: string) {
+        const response = await fetch(`${API_URL}/users/me/`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+            body: JSON.stringify({first_name, last_name}),
+        });
+
+        if (response.ok) { return true }
+        const result = await response.json();
+        throw result;
     }
 }

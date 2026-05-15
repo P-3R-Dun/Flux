@@ -10,12 +10,13 @@ interface MobileNavigationProps {
 
 const navItems: MobileNavigationProps[] = [
     { path: "/dashboard", title: "Home", icon: House },
-    { path: "/history", title: "History", icon: Goal },
+    { path: "/history", title: "History", icon: History },
     { path: "/analytics", title: "Analytics", icon: ChartLine },
-    { path: "/goals", title: "Goals", icon: History },
+    { path: "/goals", title: "Goals", icon: Goal },
 ]
 
 export const MobileNavigation = () => {
+     
     return (
         <motion.div
         initial={{ y: "100%" }} 
@@ -26,7 +27,7 @@ export const MobileNavigation = () => {
             damping: 25, 
             delay: 0.2
         }} 
-        className="flex flex-row items-center justify-around w-full bg-[#1E2329] absolute bottom-0 left-0 rounded-t-2xl overflow-hidden h-[calc(7rem+env(safe-area-inset-bottom))] z-50 pb-[env(safe-area-inset-bottom)]">
+        className="flex flex-row items-center justify-around w-full bg-[#14181c] absolute bottom-0 left-0 rounded-t-4xl overflow-hidden h-[calc(7rem+env(safe-area-inset-bottom))] z-50 pb-[env(safe-area-inset-bottom)] select-none">
             {navItems.map((item) => (
                 <NavLink aria-label={item.title} to={item.path} key={item.title} replace={true}
                 className={"h-20 flex-1"}>

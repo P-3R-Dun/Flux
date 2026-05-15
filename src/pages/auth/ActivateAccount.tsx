@@ -1,25 +1,16 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { useNavigate, useParams, Link } from 'react-router'
 import { useEffect, useState, useRef } from 'react'
-import { useSound } from '../../hooks/useSound'
 import { useActivateAccount } from '../../hooks/useAuth'
 import { LoadingPage } from '../Loading_page'
 import { LoadingSpinner } from '../../components/ui/shared/LoadingSpinner'
 
 export const ActivateAccount = () => {
-    const { play } = useSound();
     const { uid, token } = useParams();
     const Navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState(10);
     const hasFetched = useRef(false);
-
     const {isLoading, error, isSuccess, activateAccount } = useActivateAccount()
-    
-    useEffect(() => {
-        if (error) {
-            play('ERROR_SOUND')
-        }
-    },[error])
 
     useEffect(() => {
         if (isSuccess) {        
@@ -40,7 +31,7 @@ export const ActivateAccount = () => {
 
     useEffect(() => {
         if (isSuccess) {
-            play('SUCCESS_SOUND');
+            ;
         }
     }, [isSuccess])
 
@@ -73,7 +64,6 @@ export const ActivateAccount = () => {
                         whileHover={{scale: 1.05}} 
                         whileTap={{scale: 0.95}}>
                             <Link 
-                                onClick={() => play('BUTTON_SOUND')} 
                                 to='/' 
                                 className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
                                 {isLoading ? <LoadingSpinner /> : "Back to Log In"}
@@ -110,7 +100,7 @@ export const ActivateAccount = () => {
                         whileHover={{scale: 1.05}} 
                         whileTap={{scale: 0.95}}>
                             <Link 
-                                onClick={() => play('BUTTON_SOUND')} 
+                                
                                 to='/register' 
                                 className="flex items-center justify-center p-3 w-full bg-button-gradient rounded-xl font-semibold cursor-pointer select-none shadow-[0_0_40px_rgba(99,121,184,0.3)]">
                                 {isLoading ? <LoadingSpinner /> : "Back to Register"}
