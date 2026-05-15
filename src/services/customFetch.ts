@@ -1,5 +1,6 @@
-const IP = import.meta.env.VITE_SERVER_IP;
-const BASE_URL = `${IP}/api`;
+// const IP = import.meta.env.VITE_SERVER_IP;
+// const BASE_URL = `http://${IP}:8000/api`; This use for starting dev server
+const BASE_URL = `/api`; // This use for ngrok deploy server
 
 export const customFetch = async (url: string, options: RequestInit = {}) => {
     let accessToken = localStorage.getItem('access') || sessionStorage.getItem('access');

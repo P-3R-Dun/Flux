@@ -1,7 +1,8 @@
 import { customFetch } from "./customFetch";
 
-const IP = import.meta.env.VITE_SERVER_IP;
-const API_URL = `${IP}/api/auth`;
+// const IP = import.meta.env.VITE_SERVER_IP;
+// const API_URL = `http://${IP}:8000/api/auth`; This use for starting dev server
+const API_URL = '/api/auth'; // This use for ngrok deploy server
 
 interface LoginDT { username: string; password: string; }
 interface RegisterDT { email: string; username: string; password: string; }

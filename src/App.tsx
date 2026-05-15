@@ -15,6 +15,7 @@ import { TransactionCreatePage } from '@/pages/dashboard/mobile/TransactionCreat
 import { SettingPage } from '@/pages/dashboard/mobile/SettingPage.tsx'
 import { TemplatesPage } from '@/pages/dashboard/mobile/TemplatesPage'
 import { TransactionsHistoryPage } from "@/pages/history/mobile/TransactionsHistoryPage"
+import { AnalyticsPage } from './pages/analytics/mobile/AnalyticsPage'
 
 function App() {
   const location = useLocation();
@@ -63,8 +64,7 @@ function App() {
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/history" element={<TransactionsHistoryPage />} />
-                <Route path="/analytics" element={<Dashboard />} />
-                <Route path="/goals" element={<Dashboard />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
               </Route>
               <Route path="/add-transaction" element={<TransactionCreatePage />} />
               <Route path="/templates" element={<TemplatesPage />} />
